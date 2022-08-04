@@ -20,4 +20,7 @@ Log files are zipped every day at midnight.
 Obviously clone the repository.
 In order to display the channel, create a directory into your html files directory, then symlink **Bot.php events.php functions.php IRC.php messages.php params.php refresh.php view.php export.php index.php mirc_colors.php partyline.php refreshView.php** in it, and symlink **mirc.css.php params.php tabs.css.php** into *css* subdirectory, and finally **params.php refresh.js.php** into the *js* one.
 
+You MUST create an tinBot.pem file (in order to use secure connections) !!
+e.g. ```cp fullchain.pem tinBot.pem;cat privkey.pem >> tinBot.pem```
+
 /!\ You'll have to edit some files
