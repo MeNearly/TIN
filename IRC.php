@@ -314,7 +314,6 @@ class IRC {
       $context = stream_context_create();
       stream_context_set_option($context, 'ssl', 'allow_self_signed', true);
       stream_context_set_option($context, 'ssl', 'verify_peer', false);
-      stream_context_set_option($context, 'ssl', 'cafile', "/etc/letsencrypt/live/xylian.fr/cert.pem");
       /* Doesn't seem to work ... */
       stream_context_set_option($context, 'ssl', 'local_cert', "./tin.pem");
       stream_context_set_option($context, 'ssl', 'verify_peer_name', false);
