@@ -1,4 +1,5 @@
 #!/usr/bin/bash
+cd /home/xylian/monitoring
 if test -e pid.tinBot;then
   echo "Killing TIN Bot"
   kill -9 $(more pid.tinBot)

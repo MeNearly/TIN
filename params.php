@@ -7,19 +7,20 @@
 ** V1.1b **
 ***********/
 namespace bot;
+session_start();
 
 const ADMINISTRATOR="monitor"; /* administrator username in .htaccess */
 
 const version_reply="Tin Irc Node v1.2 (c) 2020-2022 xylian.fr";
 const quitMsg="Gone with the wind...";
 
-const messagesDir="/home/YOU/monitoring/JSON/";
-const archivesDir="/home/YOU/monitoring/archives/";
+const messagesDir="/home/xylian/monitoring/JSON/";
+const archivesDir="/home/xylian/monitoring/archives/";
 
 const refreshInterval=20; /* Pour la visualisation en 'live' */
 
 /* Must include EVERY channels on EVERY connection */
-const channels=array("server_one_#myChannel");
+const channels=array("chaat_#adultes");
 /*const channels=array(); */
 
 /* channels 'secrets' réservé à l'utilisateur ADMINISTRATOR */

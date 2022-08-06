@@ -1,7 +1,7 @@
 <?php
 
 namespace bot;
-require("IRC.php");
+require 'IRC.php';
 
 class Bot {
   private $version_reply;

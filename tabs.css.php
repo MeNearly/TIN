@@ -7,7 +7,7 @@
 /**********
 ** V1.1b **
 ***********/
-require_once("mirc_colors.php");
+require_once 'mirc_colors.php';
 header("Content-type: text/css");/* Style the tab */
 ?>
 .clickable:hover {cursor:pointer}

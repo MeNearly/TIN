@@ -8,8 +8,8 @@
 ** V1.1b **
 ***********/
 namespace bot;
-require_once "functions.php";
-require_once "partyline.php";
+require_once 'functions.php';
+require_once 'partyline.php';
 
 const END="\r\n";
 const chanPattern="(?P<chan>(#|&)[a-zA-Z0-9\-\+_\.]+)";

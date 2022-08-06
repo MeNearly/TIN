@@ -1,4 +1,5 @@
 #!/usr/bin/bash
+cd ~/TIN
 if test -e pid.tinBot;then
   echo "TIN Bot seems to be already running..."
   exit 1

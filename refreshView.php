@@ -7,7 +7,7 @@
 ** V1.1b **
 ***********/
 namespace bot;
-require_once('functions.php');
+require_once 'functions.php';
 
 $channel=$_REQUEST['channel']??"";
 $date_ft=$_REQUEST['date']??"";

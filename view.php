@@ -6,7 +6,7 @@
 /**********
 ** V1.1b **
 ***********/
-require_once("functions.php");
+require_once 'functions.php';
 ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" dir="ltr">

@@ -10,7 +10,7 @@ namespace bot\messages;
 
 const LOG_DEBUG=false;
 
-require_once("params.php");
+require_once 'params.php';
 
 function log_debug(string $msg) {
   if (LOG_DEBUG)

@@ -7,8 +7,8 @@
 ** V1.1b **
 ***********/
 namespace bot;
-require_once('params.php');
-require_once('messages.php');
+require_once 'params.php';
+require_once 'messages.php';
 
 /* On récupère le current=xxx, par défaut 0 */
 $current=floatval($_REQUEST['current']??0);

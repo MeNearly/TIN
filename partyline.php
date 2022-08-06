@@ -1,7 +1,7 @@
 <?php
 namespace bot\partyline;
 
-require_once "events.php";
+require_once 'events.php';
 
 const HELP="`Partyline` active commands are :
 - /die\t\t\t => stop ALL the IRC connections of the bot

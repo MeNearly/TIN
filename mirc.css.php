@@ -7,6 +7,6 @@
 /**********
 ** V1.1b **
 ***********/
-require_once("mirc_colors.php");
+require_once 'mirc_colors.php';
 header("Content-type: text/css");
 echo \bot\colors\getCSS();
