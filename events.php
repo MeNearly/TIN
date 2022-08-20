@@ -263,7 +263,7 @@ function link(array $data, \bot\IRC $conn) {
 /* will only reflect messages from $conn->ownerNick */
 function restrictedLink(array $data, \bot\IRC $conn) {
   $from=strtolower($data['nick']);
-  if ($from==$conn->getOwnerNick()) {
+  if ($conn->isOwnerNick($from)) {
     $words=preg_split("/ /",$data['msg']);
     if (count($words)>2 && preg_match("/!pv/i",$words[0])) {
       $to=\bot\stripControlCodes($words[1]);

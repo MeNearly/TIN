@@ -55,7 +55,7 @@ class IRC {
 
   private $owner; /* In case the connection is owned by a bot -- see RunBot.sh for sample */
 
-  private $ownerNick = ""; /* used by \bot\restrictedLink */
+  private $ownersNicks = array(); /* used by \bot\restrictedLink */
 
   protected $eventHandlers = array(
     'userslist' =>  array(),
@@ -74,12 +74,21 @@ class IRC {
     'notice'    =>  array(),
     'servmsg'   =>  array());
 
-  public function __construct(string $hostname, string $port, bool $ssl = true, string $short = "", int $uport = 1807, string $password = NULL, string $ownerNick = "") {
+  public function __construct(string $hostname, string $port, bool $ssl = true, string $short = "", int $uport = 1807, string $password = NULL, $ownersNicks = "") {
     /* ATTENTION : this password is the server's one, not the nick's one !! */
     $this->hostname = $hostname;
     $this->port     = intval($port);
     $this->ssl      = $ssl;
     $this->password = $password;
+    if ($ownersNicks != "") {
+      if (is_array($ownersNicks)) {
+        foreach ($ownersNicks as $n) {
+          $this->ownersNicks[]=strtolower($n):
+        }
+        $this->ownersNicks=$ownersNicks;
+      } else {
+        $this->ownersNicks=array(strtolower($ownersNicks));
+      }
     $this->ownerNick = strtolower($ownerNick);
     $this->channels = array();
     $this->channelsUsers = array();
@@ -135,13 +144,13 @@ class IRC {
     return $this->shortname;
   }
 
-  public function getOwnerNick() {
-    return $this->ownerNick;
+  public function isOwnerNick($nick) {
+    return in_array(strtolower($nick), $this->ownersNicks);
   }
 
-  public function setOwnerNick(string $nick="") {
-    if ($nick != "")
-      $this->ownerNick=strtoLower($nick);
+  public function addOwnerNick(string $nick="") {
+    if ($nick != "" && !isOwnerNick($nick))
+      $this->ownersNicks[]=strtoLower($nick);
   }
 
   public function getChannels():array {
