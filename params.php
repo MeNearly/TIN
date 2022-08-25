@@ -43,8 +43,11 @@ const messagesDisplay=3600;  /* en secondes (h×3600), conservés à l'ouverture
 /***********************
 ** FIN DU PARAMÉTRAGE **
 ************************/
-const LICENSE = file_get_contents("./LICENSE");
 set_include_path(get_include_path().PATH_SEPARATOR."/var/www/html/monitoring/");
+
+function getLicense():string {
+  return file_get_contents("./LICENSE");
+}
 
 function getAllowedChannels():array {
   $channels=\bot\channels;
