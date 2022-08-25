@@ -14,16 +14,16 @@ const ADMINISTRATOR="monitor"; /* administrator username in .htaccess */
 const version_reply="Tin Irc Node v1.2 (c) 2020-2022 ksynet.fr";
 const quitMsg="Gone with the wind...";
 
-const messagesDir="/home/xylian/monitoring/JSON/";
-const archivesDir="/home/xylian/monitoring/archives/";
+const messagesDir="/home/YOU/monitoring/JSON/";
+const archivesDir="/home/YOU/monitoring/archives/";
 
 const refreshInterval=20; /* Pour la visualisation en 'live' */
 
 /* Must include EVERY channels on EVERY connection */
-const channels=array("chaat_#adultes");
+const channels=array("server1_#myNeatChannel");
 /*const channels=array(); */
 
-/* channels 'secrets' réservé à l'utilisateur ADMINISTRATOR */
+/* channels 'secrets' réservé à l'utilisateur \bot\ADMINISTRATOR */
 const secretChannels=array();
 
 
@@ -50,6 +50,9 @@ function getLicense():string {
 }
 
 function getAllowedChannels():array {
+/* il existe plusieurs moyens de réserver l'accès */
+/* .htaccess en est un, mais un système en php plus élaboré est */
+/* intégrable facilement */
   $channels=\bot\channels;
   if (($_SERVER['PHP_AUTH_USER']??"")==\bot\ADMINISTRATOR) {
     $channels=array_merge($channels,\bot\secretChannels);
