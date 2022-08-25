@@ -80,6 +80,10 @@ function parseUserInput($token, $line, \bot\IRC $conn) {
   $exited=false;
   $words=preg_split("@ @",$line);
   switch ($words[0]) {
+    case "/license" :
+      sendReply($token,\bot\LICENSE, $conn);
+      break;
+
     case "/help" :
       sendReply($token,\bot\partyline\HELP,$conn);
       break;
