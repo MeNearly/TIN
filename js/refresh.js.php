@@ -2,7 +2,6 @@
 /********************************************
 ** Functions JS de visualisation en direct **
 ** (c) 2018-2022 MeNearly@gmail.com GPL    **
-** (c) 2022 ian/xylian.fr                  **
 ** [except corrected mircToHtml]           **
 *********************************************/
 /**********
@@ -24,6 +23,8 @@ var timestamps=[];
 
 // Currently running refresh
 var running=0;
+
+const zeroPad = (num, places) => String(num).padStart(places, '0');
 
 //Remplacer tous les 'search' par 'replacement' dans une chaîne
 String.prototype.replaceAll = function(search, replacement) {
@@ -88,11 +89,9 @@ function changeDate(event,channel) {
   }
   // TODAY
   let today=new Date();
-  let dd0=today.getDate();
-  let mm0=today.getMonth()+1;
+  let dd0=zeroPad(today.getDate(),2);
+  let mm0=zeroPad(today.getMonth()+1,2);
   let yy0=today.getFullYear();
-  dd0=(dd0<10)?"0"+dd0:dd0;
-  mm0=(mm0<10)?"0"+mm0:mm0;
 
   let str_today=yy0+"-"+mm0+"-"+dd0;
 
@@ -102,11 +101,9 @@ function changeDate(event,channel) {
   let chosenDate=Date.parse(dateValue.value);
   dateObj.setTime(chosenDate);
 
-  let dd=dateObj.getDate();
-  let mm=dateObj.getMonth()+1;
+  let dd=zeroPad(dateObj.getDate(),2);
+  let mm=zeroPad(dateObj.getMonth()+1,2);
   let yy=dateObj.getFullYear();
-  dd=(dd<10)?"0"+dd:dd;
-  mm=(mm<10)?"0"+mm:mm;
 
   let str_chosen=yy+"-"+mm+"-"+dd;
 
@@ -131,11 +128,9 @@ function exportDate(event,channel,date) {
   event.preventDefault();
   let chosenDate=new Date();
   chosenDate.setTime(Date.parse(date));
-  let dd=chosenDate.getDate();
-  let mm=chosenDate.getMonth()+1;
+  let dd=zeroPad(chosenDate.getDate(),2);
+  let mm=zeroPad(chosenDate.getMonth()+1,2);
   let yy=chosenDate.getFullYear();
-  dd=(dd<10)?"0"+dd:dd;
-  mm=(mm<10)?"0"+mm:mm;
   let dateParam=yy+"_"+mm+"_"+dd;
   channel=channel.replaceAll(/\+/,'@@@');
   channel=channel.replaceAll(/\#/,'%@@');
@@ -225,7 +220,6 @@ function refreshCallback(msgs,channel,scroll=false,init=false) {
 //  }
 
 /* SPECIAL FOR REVERSE VIDEO ... complicated ^^ */
-/* (c) 2022 ian/xylian */
   let lines=channelTab.children;
   for (let i=0;i<lines.length;i++) {
     reverseVideo(lines[i]);
@@ -305,17 +299,14 @@ function mircToHtml(text) {
   return text;
 }
 
-function reverseVideo(line) { /* transform pseudo class Xreverse to calculated values */
+function reverseVideo(line) {
   let col,bcol,elem=null,orig=null;
   let childs=line.childNodes,cstyle;
+  let tmp;
   for (let i=0;i<childs.length;i++) {
     elem=childs[i];
-    if (elem.childNodes.length>0) {
-      reverseVideo(elem);
-    }
     orig=elem;
-    if (elem.classList && elem.classList.contains("Xreverse")) {
-      elem=elem.parentElement;
+    if (elem.classList.contains("Xreverse")) {
       cstyle=getComputedStyle(elem);
       while (elem && cstyle.color=="") {
         cstyle=getComputedStyle(elem)
@@ -323,9 +314,15 @@ function reverseVideo(line) { /* transform pseudo class Xreverse to calculated v
       }
       if (cstyle && cstyle.color!="") {
         col=cstyle.color;
+        /* search for a bgcolor */
+        elem=orig;
+        while (elem && (cstyle.backgroundColor=="" || cstyle.backgroundColor=="rgba(0, 0, 0, 0)")) {
+          cstyle=getComputedStyle(elem)
+          elem=elem.parentElement;
+        }
         bcol=cstyle.backgroundColor;
-        if (bcol.endsWith("0)") && bcol.startsWith("rgba")) 
-          bcol="white";
+        if (bcol.endsWith("0)") && bcol.startsWith("rgba"))
+          bcol=bcol.substring(0,bcol.lastIndexOf(","))+",255)";
         orig.style.color=bcol;
         orig.style.backgroundColor=col;
         orig.className="";

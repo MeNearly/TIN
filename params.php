@@ -11,7 +11,7 @@ session_start();
 
 const ADMINISTRATOR="monitor"; /* administrator username in .htaccess */
 
-const version_reply="Tin Irc Node v1.2 (c) 2020-2022 xylian.fr";
+const version_reply="Tin Irc Node v1.2 (c) 2020-2022 ksynet.fr";
 const quitMsg="Gone with the wind...";
 
 const messagesDir="/home/xylian/monitoring/JSON/";

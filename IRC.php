@@ -1,7 +1,7 @@
 <?php
 /********************************************
 **    An IRC connecion for Tin Irc Node    **
-** (c) 2020-2022 ian & xylian.fr           **
+** (c) 2020-2022 ian & ksynet.fr           **
 ** MeNearly@gmail.com                      **
 *********************************************/
 /**********

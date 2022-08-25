@@ -5,7 +5,7 @@
 **   the messages from the server                  **
 ** They must explicetly be specified when creating **
 **    the connection to IRC (see class \bot\IRC )  **
-** (c) 2020-2022 ian/xylian.fr MeNeraly@gmail.com  **
+** (c) 2020-2022 meNearly@gmail.com  **
 ** All source files are under GPL                  **
 *****************************************************/
 namespace bot\events;
