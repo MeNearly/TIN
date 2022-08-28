@@ -91,9 +91,9 @@ function voice(array $data, \bot\IRC $conn) {
   $nick=$data['nick'];
   $to=$data['to'];
   $chan=$data['chan'];
-  $data['msg']="\00304$nick a donné la parole à $to sur $chan\003";
+  $data['msg']="\00309$nick a donné la parole à $to sur $chan\003";
   $data['to']=$chan;
-  $data['nick']="\00303*\003";
+  $data['nick']="\00309*\003";
   \bot\saveMessage($data,$conn);
   \bot\events\link($data, $conn);
 }
@@ -104,9 +104,9 @@ function devoice(array $data, \bot\IRC $conn) {
   $nick=$data['nick'];
   $to=$data['to'];
   $chan=$data['chan'];
-  $data['msg']="\00304$nick a enlevé la parole à $to sur $chan\003";
+  $data['msg']="\00310$nick a enlevé la parole à $to sur $chan\003";
   $data['to']=$chan;
-  $data['nick']="\00304*\003";
+  $data['nick']="\00310*\003";
   \bot\saveMessage($data,$conn);
   \bot\events\link($data, $conn);
 }
