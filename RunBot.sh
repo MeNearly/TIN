@@ -30,6 +30,7 @@ $conn1->addEventHandler('quit');
 $conn1->addEventHandler('kick');
 $conn1->addEventHandler('ban');
 $conn1->addEventHandler('unban');
+$conn1->addEventHandler('server_unban','\bot\events\unban');
 $conn1->addEventHandler('voice');
 $conn1->addEventHandler('devoice');
 

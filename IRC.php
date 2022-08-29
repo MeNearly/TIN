@@ -166,10 +166,10 @@ class IRC {
   }
 
   private function initEventsPatterns() {
-    $key='/:(?P<server>.+) 353 '.$this->nickname.' . (?P<chan>#.+) :(?P<list>.*)/';
+    $key='/:(?P<server>.+) 353 '.$this->nickname.' . '.chanPattern.' :(?P<list>.*)/';
     $this->events['userslist']=$key;
     /* Some servers do not send server name nor bot nick first ... */
-    $this->events['nickslist']='/353 . (?P<chan>.+) :(?P<list>.+)/';
+    $this->events['nickslist']='/353 . '.chanPattern.' :(?P<list>.+)/';
 
     $this->events['join']='/:(?P<nick>.+)!(?P<name>.+)@(?P<host>.+) JOIN :'.chanPattern.'/';
     $this->events['part']='/:(?P<nick>.+)!(?P<name>.+)@(?P<host>.+) PART '.chanPattern.'/';
@@ -185,11 +185,11 @@ class IRC {
     $this->events['kick']='/:(?P<nick>.+)!(?P<name>.+)@(?P<host>.+) KICK '.chanPattern.' (?P<to>[^ :]+) :(?P<msg>.+)/';
     $this->events['ban']='/:(?P<nick>.+)!(?P<name>.+)@(?P<host>.+) MODE '.chanPattern.' (?P<btype>\+([b]+)) (?P<to>.+)/';
     $this->events['unban']='/:(?P<nick>.+)!(?P<name>.+)@(?P<host>.+) MODE '.chanPattern.' (?P<btype>\-([b]+)) (?P<to>.+)/';
+    $this->events['server_unban']='/:(?P<nick>.+) MODE '.chanPattern.' (?P<btype>\-([b]+)) (?P<to>.+)/';
     $this->events['voice']='/:(?P<nick>.+)!(?P<name>.+)@(?P<host>.+) MODE '.chanPattern.' (?P<voice>\+([v]+)) (?P<to>.+)/';
     $this->events['devoice']='/:(?P<nick>.+)!(?P<name>.+)@(?P<host>.+) MODE '.chanPattern.' (?P<devoice>\-([v]+)) (?P<to>.+)/';
 
     $this->events['action']='/\001ACTION (.*)\001/'; /* only used in links, see reformatLinkedMessage */
-
   }
 
   public function testPattern(string $name, string $msg) {
