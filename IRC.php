@@ -66,6 +66,7 @@ class IRC {
     'kick'      =>  array(),
     'ban'       =>  array(),
     'unban'     =>  array(),
+    'server_unban'     =>  array(),
     'voice'       =>  array(),
     'devoice'     =>  array(),
     'nick'      =>  array(),
