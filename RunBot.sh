@@ -22,7 +22,6 @@ $conn1->addEventHandler('userslist');
 $conn1->addEventHandler('privmsg');
 $conn1->addEventHandler('privmsg','\bot\events\link'); /* to allow links */
 $conn1->addEventHandler('notice');
-$conn1->addEventHandler('servmsg');
 $conn1->addEventHandler('nick');
 $conn1->addEventHandler('join');
 $conn1->addEventHandler('part');
@@ -33,7 +32,9 @@ $conn1->addEventHandler('unban');
 $conn1->addEventHandler('server_unban','\bot\events\unban');
 $conn1->addEventHandler('voice');
 $conn1->addEventHandler('devoice');
-
+/* Doit être ajouté à la fin, car trop générique et peut capturer
+  un autre message avec un formatage comportant des nombres !! */
+$conn1->addEventHandler('servmsg');
 
 // On ajoute server_one
 $Bot->addConnection($conn1);
@@ -49,7 +50,6 @@ $conn2->addEventHandler('userslist');
 $conn2->addEventHandler('privmsg');
 $conn2->addEventHandler('privmsg','\bot\events\restrictedLink');
 $conn2->addEventHandler('notice');
-$conn2->addEventHandler('servmsg');
 $conn2->addEventHandler('nick');
 $conn2->addEventHandler('join');
 $conn2->addEventHandler('part');
@@ -59,6 +59,8 @@ $conn2->addEventHandler('ban');
 $conn2->addEventHandler('unban');
 $conn2->addEventHandler('voice');
 $conn2->addEventHandler('devoice');
+$conn2->addEventHandler('servmsg');
+
 
 // On ajoute server_2
 $Bot->addConnection($conn2);
