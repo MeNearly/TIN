@@ -32,8 +32,6 @@ $conn1->addEventHandler('unban');
 $conn1->addEventHandler('server_unban','\bot\events\unban');
 $conn1->addEventHandler('voice');
 $conn1->addEventHandler('devoice');
-/* Doit être ajouté à la fin, car trop générique et peut capturer
-  un autre message avec un formatage comportant des nombres !! */
 $conn1->addEventHandler('servmsg');
 
 // On ajoute server_one

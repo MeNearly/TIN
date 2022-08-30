@@ -73,7 +73,8 @@ class IRC {
     'nick2'     =>  array(),
     'privmsg'   =>  array(),
     'notice'    =>  array(),
-    'servmsg'   =>  array());
+    'servmsg'   =>  array()
+  );
 
   public function __construct(string $hostname, string $port, bool $ssl = true, string $short = "", int $uport = 1807, string $password = NULL, $ownersNicks = "") {
     /* ATTENTION : this password is the server's one, not the nick's one !! */
@@ -84,13 +85,13 @@ class IRC {
     if ($ownersNicks != "") {
       if (is_array($ownersNicks)) {
         foreach ($ownersNicks as $n) {
-          $this->ownersNicks[]=strtolower($n):
+          $this->ownersNicks[]=strtolower($n);
         }
         $this->ownersNicks=$ownersNicks;
       } else {
         $this->ownersNicks=array(strtolower($ownersNicks));
       }
-    $this->ownerNick = strtolower($ownerNick);
+    }
     $this->channels = array();
     $this->channelsUsers = array();
     if ($short=="") {
@@ -179,7 +180,6 @@ class IRC {
 
     $this->events['privmsg']='/:(?P<nick>.+)!(?P<name>.+)@(?P<host>.+) PRIVMSG (?P<to>[^ :]+) :(?P<msg>.+)/';
     $this->events['notice']='/:(?P<nick>.+)!(?P<name>.+)@(?P<host>.+) NOTICE (?P<to>[^ :]+) :(?P<msg>.+)/'; /* TODO does not yet handle channels notice */
-    $this->events['servmsg']='/:(?P<serv>.+) (?P<code>[0-9]+) (?P<to>[^ :]+) (?P<msg>.*)/'; /* message from server with RPL_CODE, must be added AFTER 'userslist' */
 
     $this->events['versionmsg']='/:(?P<nick>.+)!(?P<name>.+)@(?P<host>.+) PRIVMSG (?P<to>[^ :]+) :\001VERSION(.*)\001/';
     $this->events['versiononly']='/\001VERSION(.*)\001/';
@@ -191,6 +191,10 @@ class IRC {
     $this->events['devoice']='/:(?P<nick>.+)!(?P<name>.+)@(?P<host>.+) MODE '.chanPattern.' (?P<devoice>\-([v]+)) (?P<to>.+)/';
 
     $this->events['action']='/\001ACTION (.*)\001/'; /* only used in links, see reformatLinkedMessage */
+
+    /* must be the last one !! */
+    $this->events['servmsg']='/:(?P<serv>.+) (?P<code>[0-9]+) (?P<to>[^ :]+) (?P<msg>.*)/'; /* message from server with RPL_CODE, must be added AFTER 'userslist' */
+
   }
 
   public function testPattern(string $name, string $msg) {
