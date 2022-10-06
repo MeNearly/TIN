@@ -38,25 +38,6 @@ function initTimestamps() {
   });
 }
 
-// Requête asynchrone
-function createXHR() {
-  let request = false;
-  try {
-    request = new XMLHttpRequest();
-  } catch (e1) {
-    try {
-      request = new ActiveXObject('Microsoft.XMLHTTP');
-    } catch (e2) {
-      try {
-        request = new ActiveXObject('Msxml2.XMLHTTP');
-      } catch (e3) {
-        request = false;
-      }
-    }
-  }
-  return request;
-};
-
 function startRefresh(interv) {
   let tmpInterv=parseInt(interv);
   if (!isNaN(tmpInterv)) {
@@ -144,62 +125,66 @@ function refreshAll(scroll=false) {
 }
 
 function refresh(channel,scroll=false) {
-  let xhr=createXHR();
-  xhr.onreadystatechange = function() {
-    if(this.readyState == 4) {
-      let text=this.responseText;
-      if(this.status != 200) {
-        document.body.style.cursor='default';
-        alert("Une erreur est survenue.");
-        running--;
-      } else {
-        if (text!="") {
-          refreshCallback(JSON.parse(text),channel,scroll);
-        }
-      }
-    }
-  };
   if (running<channels.length) {
     let timestamp=timestamps[channel];
     tmp_channel=channel.replaceAll(/\+/,'@@@');
     tmp_channel=channel.replaceAll(/\#/,'%@@');
-    xhr.open("GET", `refresh.php?current=${timestamp}&channel=${tmp_channel}`);
-    xhr.send(null);
     document.body.style.cursor='wait';
     running++;
+    fetch(`refresh.php?current=${timestamp}&channel=${tmp_channel}`).then(response => {
+      if (response.ok) {
+        let type=response.headers.get('Content-Type');
+        if (type && type.indexOf("application/json")!==-1) {
+          let j=response.json();
+          if (j)
+            return j;
+          else
+            throw new Error("Données erronées.");
+        }
+      } else {
+        throw new Error("Erreur réseau...");
+      }
+    }).then(json => {
+      refreshCallback(json,channel,scroll);
+    }).catch(error => {
+      alert(error.message);
+    }).finally( () => {
+      running--;
+      if (running==0)
+        document.body.style.cursor='default';
+    });
   }
 };
 
 // Special for View because of the HUGE data !
-function refreshView(channel,dateParam='',isToday) {
-  let xhr=createXHR();
-  xhr.onreadystatechange = function() {
-    if(this.readyState == 4) {
-      let text=this.responseText;
-      document.body.style.cursor='default';
-      if(this.status != 200) {
-        alert("Une erreur est survenue.");
-      } else {
-        let channelTab=document.getElementById(channel+"Tab");
-        if (text!="") {
-          channelTab.innerHTML=text;
-          channelTab.scrollTop=isToday?1000000:0; /* today? => end, else => from start */
-          /* reverseVideo ... still complicated ^^ */
-          let lines=channelTab.children;
-          for (let i=0;i<lines.length;i++) {
-            reverseVideo(lines[i]);
-          }
-        } else {
-          let channelTab="<tr><td colspan='3' style='text-align:center;color:darkred'>Aucun message</td></tr>";
-        }
-      }
-    }
-  };
+function refreshView(channel, dateParam='', isToday=false) {
   tmp_channel=channel.replaceAll(/\+/,'@@@');
   tmp_channel=channel.replaceAll(/\#/,'%@@');
-  xhr.open("GET", `refreshView.php?channel=${tmp_channel}&date=${dateParam}`);
-  xhr.send(null);
   document.body.style.cursor='wait';
+  fetch(`refreshView.php?channel=${tmp_channel}&date=${dateParam}`).then( response => {
+    if (response.ok) {
+      return response.text();
+    } else {
+      throw new Error("Erreur réseau...");
+    }
+  }).then(text => {
+    let channelTab=document.getElementById(channel+"Tab");
+    if (text!="") {
+      channelTab.innerHTML=text;
+      channelTab.scrollTop=isToday?1000000:0; /* today? => end, else => from start */
+      /* reverseVideo ... still complicated ^^ */
+      let lines=document.getElementsByClassName("Xreverse");
+      for (let i=0;i<lines.length;i++) {
+        reverseVideo(lines[i]);
+      }
+    } else {
+      let channelTab="<tr><td colspan='3' style='text-align:center;color:darkred'>Aucun message</td></tr>";
+    }
+  }).catch (error => {
+    alert(error.message);
+  }).finally( () => {
+    document.body.style.cursor='default';
+  });
 };
 
 function refreshCallback(msgs,channel,scroll=false,init=false) {
@@ -220,14 +205,10 @@ function refreshCallback(msgs,channel,scroll=false,init=false) {
 //  }
 
 /* SPECIAL FOR REVERSE VIDEO ... complicated ^^ */
-  let lines=channelTab.children;
+  let lines=document.getElementsByClassName("Xreverse");
   for (let i=0;i<lines.length;i++) {
     reverseVideo(lines[i]);
   }
-  running--;
-  if (running==0)
-    document.body.style.cursor='default';
-
 }
 
 function openChannelTab(evt, channel) {
@@ -299,34 +280,30 @@ function mircToHtml(text) {
   return text;
 }
 
-function reverseVideo(line) {
-  let col,bcol,elem=null,orig=null;
-  let childs=line.childNodes,cstyle;
-  let tmp;
-  for (let i=0;i<childs.length;i++) {
-    elem=childs[i];
+function reverseVideo(elem) {
+  let col,bcol,cstyle,tmp;
+
+  if (elem.classList.contains("Xreverse")) {
+    cstyle=getComputedStyle(elem);
     orig=elem;
-    if (elem.classList.contains("Xreverse")) {
-      cstyle=getComputedStyle(elem);
-      while (elem && cstyle.color=="") {
+    while (elem && cstyle.color=="") {
+      cstyle=getComputedStyle(elem)
+      elem=elem.parentElement;
+    }
+    if (cstyle && cstyle.color!="") {
+      col=cstyle.color;
+      /* search for a bgcolor */
+      elem=orig;
+      while (elem && (cstyle.backgroundColor=="" || cstyle.backgroundColor=="rgba(0, 0, 0, 0)")) {
         cstyle=getComputedStyle(elem)
         elem=elem.parentElement;
       }
-      if (cstyle && cstyle.color!="") {
-        col=cstyle.color;
-        /* search for a bgcolor */
-        elem=orig;
-        while (elem && (cstyle.backgroundColor=="" || cstyle.backgroundColor=="rgba(0, 0, 0, 0)")) {
-          cstyle=getComputedStyle(elem)
-          elem=elem.parentElement;
-        }
-        bcol=cstyle.backgroundColor;
-        if (bcol.endsWith("0)") && bcol.startsWith("rgba"))
-          bcol=bcol.substring(0,bcol.lastIndexOf(","))+",255)";
-        orig.style.color=bcol;
-        orig.style.backgroundColor=col;
-        orig.className="";
-      }
+      bcol=cstyle.backgroundColor;
+      if (bcol.endsWith("0)") && bcol.startsWith("rgba"))
+        bcol=bcol.substring(0,bcol.lastIndexOf(","))+",255)";
+      orig.style.color=bcol;
+      orig.style.backgroundColor=col;
+      orig.className="";
     }
   }
 };
