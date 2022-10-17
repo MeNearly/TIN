@@ -30,51 +30,60 @@ require_once 'functions.php';
       $date_dt=\DateTime::createFromFormat("Y_m_d",$date);
     }
 // Tab links
-    echo '<div class="tabView">'.PHP_EOL;
+?>
+    <div class="tabView">
+<?php
     $channels=\bot\getAllowedChannels();
     foreach ($channels as $chan) {
       $chan=strtolower($chan);
-      echo '<button class="tablinks" onclick="openChannelTab(event, \''.$chan.'\')" id="'.$chan.'Button">'.$chan.'</button>'.PHP_EOL;
+?>
+      <button class="tablinks" onclick="openChannelTab(event, '<?=$chan?>')" id="<?=$chan?>Button"><?=$chan?></button>
+<?php
     }
-    echo "</div>".PHP_EOL;
+?>
+      <span style="font-weight:bold;float:right"><a href="index.php">Live</a></span>
+    </div>
+<?php
     foreach ($channels as $chan) {
       $chan=strtolower($chan);
 ?>
     <div id="<?=$chan?>" class="tabcontent">
-    <table style="border:1px solid;border-color:darkslateblue;table-layout:fixed" width="100%">
-      <thead>
-        <tr><th></th><th></th>
-        <th style="width:85vw">Channel <?=$chan?> du <span id="<?=$chan?>_date_lbl"><?=($date_dt?$date_dt->format("d/m/Y"):"")?></span>&nbsp;&nbsp;
+      <table style="border:1px solid;border-color:darkslateblue;table-layout:fixed" width="100%">
+        <thead>
+          <tr><th></th><th></th>
+          <th style="width:85vw">Channel <?=$chan?> du <span id="<?=$chan?>_date_lbl"><?=($date_dt?$date_dt->format("d/m/Y"):"")?></span>&nbsp;&nbsp;
 <!-- ATTENTION CARACTÈRES PARFOIS INVISIBLES POUR LES BOUTONS (suivant l'éditeur de texte) -->
-          <input type="date" value="" id="<?=$chan?>_date" onchange="changeDate(event,'<?=$chan?>')" />
+            <input type="date" value="" id="<?=$chan?>_date" onchange="changeDate(event,'<?=$chan?>')" />
 
-          <button id="<?=$chan?>RefreshBtn" style="display:none" class="clickable" onclick="changeDate(event,'<?=$chan?>');"><span style="font-size:12pt;color:blue;text-weight:bold">🗘</span></button>
-          <!-- Export button only for other dates than today -->
-          <button id="<?=$chan?>ExportBtn" style="display:none" class="clickable" onclick="exportDate(event,'<?=$chan?>',document.getElementById('<?=$chan?>_date').value);"><span style="font-size:12pt;color:blue;text-weight:bold">💾</span></button>
-         </th></tr>
-      </thead>
-      <tbody id="<?=$chan?>Tab" class="messages">
+            <button id="<?=$chan?>RefreshBtn" style="display:none" class="clickable" onclick="changeDate(event,'<?=$chan?>');"><span style="font-size:12pt;color:blue;text-weight:bold">🗘</span></button>
+            <!-- Export button only for other dates than today -->
+            <button id="<?=$chan?>ExportBtn" style="display:none" class="clickable" onclick="exportDate(event,'<?=$chan?>',document.getElementById('<?=$chan?>_date').value);"><span style="font-size:12pt;color:blue;text-weight:bold">💾</span></button>
+           </th></tr>
+        </thead>
+        <tbody id="<?=$chan?>Tab" class="messages">
 <?php
       $filename=\bot\messages\getFilename($chan."_".$date,true);
       if (!file_exists($filename)) {
-        echo '      <tr><td><span style="color:darkred">Aucun message pour '.$chan.($date_dt?" au ".$date_dt->format("d/m/Y"):"").'</span></td></tr>'.PHP_EOL;
+?>
+        <tr><td><span style="color:darkred">Aucun message pour <?=$chan.($date_dt?" au ".$date_dt->format("d/m/Y"):"")?></span></td></tr>
+<?php
       } else {
         $msgs = \bot\messages\loadFile($filename,false);
         $messages = $msgs['messages'];
         $messages = array_reverse($messages);
         foreach($messages as $m) {
 ?>
-        <tr>
-          <td class='tabline_date'><?=date('H:i:s', $m['timestamp'])?></td>
-          <td class='tabline_nick'><?=\bot\irc2html($m['nick'])?></td>
-          <td class='tabline_msg'><?=\bot\irc2html($m['message'])?></td>
-        </tr>
+          <tr>
+            <td class='tabline_date'><?=date('H:i:s', $m['timestamp'])?></td>
+            <td class='tabline_nick'><?=\bot\irc2html($m['nick'])?></td>
+            <td class='tabline_msg'><?=\bot\irc2html($m['message'])?></td>
+          </tr>
 <?php
         }
       }
 ?>
-      </tbody>
-    </table>
+        </tbody>
+      </table>
     </div>
 <?php
     }

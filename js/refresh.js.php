@@ -94,8 +94,10 @@ function changeDate(event,channel) {
   let isToday=false; /* for scrolling */
   if (str_chosen<str_today) {
     exportButton.style.display="";
+    refreshBtn.style.display="none";
   } else {
     exportButton.style.display="none";
+    refreshBtn.style.display="";
     isToday=true;
   }
 
