@@ -171,7 +171,8 @@ function refreshView(channel, dateParam='', isToday=false) {
     let channelTab=document.getElementById(channel+"Tab");
     if (text!="") {
       channelTab.innerHTML=text;
-      channelTab.scrollTop=isToday?1000000:0; /* today? => end, else => from start */
+      /* today? => end, else => from start */
+      channelTab.ownerDocument.scrollingElement.scrollTop=isToday?1000000:0;
       /* reverseVideo ... still complicated ^^ */
       let lines=document.getElementsByClassName("Xreverse");
       for (let i=0;i<lines.length;i++) {
@@ -201,7 +202,7 @@ function refreshCallback(msgs,channel,scroll=false,init=false) {
       channelTab.innerHTML += "<tr><td class='tabline_date'>" + m.date + "</td><td class='tabline_nick' >" + mircToHtml(m.nick) + "</td><td class='tabline_msg'>" + mircToHtml(m.message) + "</td></tr>";
   }
 //  if (scroll) {
-    channelTab.scrollTop=1000000; /* today */
+    channelTab.ownerDocument.scrollingElement.scrollTop=1000000; /* today */
 //  }
 
 /* SPECIAL FOR REVERSE VIDEO ... complicated ^^ */
