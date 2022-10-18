@@ -38,7 +38,7 @@ $conn1->addEventHandler('servmsg');
 $Bot->addConnection($conn1);
 $Bot->addChannels("server_one",array("#myChannel"));
 
-// On crée la connection à Xylian
+// On crée la connection à Server Two
 
 $conn2 = new \bot\IRC("irc.second.server", 6697, true, "server_two", 1807, "server_pass", "server_two user reflected to other connection");
 $conn2->setDebug(true);
@@ -66,7 +66,7 @@ $Bot->addChannels("server_two",array("#myChannel-mirror"));
 
 // Links
 $conn1->addLink("#myChannel",$conn2,"#myChannel-mirror");
-// This is used but the event handling \bot\evens\restrictedLink
+// This is not used but with the event handling \bot\events\restrictedLink
 $conn2->addLink("#myChannel-mirror",$conn1,"#myChannel");
 
 
