@@ -28,6 +28,8 @@ class IRC {
   private $nickname, $username, $realname, $userpass;
   private $nickServ="NickServ";
 
+  private $userMode="+iB";
+
   private $runningCmd=false;
 
   /* CHANS */
@@ -132,6 +134,10 @@ class IRC {
 
   public function getNickName(): string {
     return $this->nickname;
+  }
+
+  public function setUserMode($mode_s) {
+    $this->userMode=$mode_s;
   }
 
   public function setOwner(\bot\Bot $owner) {
@@ -331,7 +337,7 @@ class IRC {
       /* Doesn't seem to work ... */
       stream_context_set_option($context, 'ssl', 'local_cert', "./tin.pem");
       stream_context_set_option($context, 'ssl', 'verify_peer_name', false);
-      $this->socket = stream_socket_client('ssl://'.$this->hostname.':'.$this->port,$errno, $errstr, $timeout, STREAM_CLIENT_CONNECT, $context);
+      $this->socket = stream_socket_client('ssl://'.$this->hostname.':'.$this->port, $errno, $errstr, $timeout, STREAM_CLIENT_CONNECT, $context);
     } else {
       $this->socket = fsockopen($this->hostname, $this->port, $errno, $errstr, $timeout);
     }
@@ -408,6 +414,9 @@ class IRC {
     if (! $this->userpass !== "") {
       $this->identify();
     }
+
+    /* MODES */
+    $this->send('MODE '.$this->nickname.' '.$this->userMode);
 
     return true;
   }
