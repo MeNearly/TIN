@@ -60,22 +60,23 @@ class IRC {
   private $ownersNicks = array(); /* used by \bot\restrictedLink */
 
   protected $eventHandlers = array(
-    'userslist' =>  array(),
-    'nickslist' =>  array(),
-    'join'      =>  array(),
-    'part'      =>  array(),
-    'quit'      =>  array(),
-    'kick'      =>  array(),
-    'ban'       =>  array(),
-    'unban'     =>  array(),
-    'server_unban'     =>  array(),
+    'userslist'   =>  array(),
+    'nickslist'   =>  array(),
+    'join'        =>  array(),
+    'part'        =>  array(),
+    'quit'        =>  array(),
+    'kick'        =>  array(),
+    'ban'         =>  array(),
+    'unban'       =>  array(),
+    'server_unban'=>  array(),
     'voice'       =>  array(),
     'devoice'     =>  array(),
-    'nick'      =>  array(),
-    'nick2'     =>  array(),
-    'privmsg'   =>  array(),
-    'notice'    =>  array(),
-    'servmsg'   =>  array()
+    'nick'        =>  array(),
+    'nick2'       =>  array(),
+    'privmsg'     =>  array(),
+    'notice'      =>  array(),
+    'servmsg'     =>  array(),
+    'other_modes' =>  array()
   );
 
   public function __construct(string $hostname, string $port, bool $ssl = true, string $short = "", int $uport = 1807, string $password = NULL, $ownersNicks = "") {
@@ -200,7 +201,7 @@ class IRC {
 
     /* must be the last one !! */
     $this->events['servmsg']='/:(?P<serv>.+) (?P<code>[0-9]+) (?P<to>[^ :]+) (?P<msg>.*)/'; /* message from server with RPL_CODE, must be added AFTER 'userslist' */
-
+    $this->events['other_modes']='/:(?P<nick>.+)!(?P<name>.+)@(?P<host>.+) MODE '.chanPattern.' (?P<mode>([+|\-])([a-zA-Z]+)) (?P<user>.+)/';
   }
 
   public function testPattern(string $name, string $msg) {

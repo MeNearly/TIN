@@ -72,6 +72,34 @@ function ban(array $data, \bot\IRC $conn) {
   \bot\events\link($data, $conn);
 }
 
+/* Autres modes utilisateur */
+function other_modes(array $data, \bot\IRC $conn) {
+  \bot\chanNameToLower($data,"chan");
+  $nick=$data['nick'];
+  $to=$data['user'];
+  $chan=$data['chan'];
+  $flag=($data['mode']??"")[0]=="+"?"donné":"enlevé";
+  $color=$flag=="donné"?"03":"07";
+  $data['msg']="\003$color$nick a $flag le statut d";
+  switch ($data['mode'][1]) {
+    case "h":
+      $data['msg'].="e semi-opérateur de canal à $to";
+      break;
+    case "o":
+      $data['msg'].="'opérateur de canal à $to";
+      break;
+    case "a":
+      $data['msg'].="'administrateur de canal à $to";
+      break;
+    case "q":
+      $data['msg'].="'e propriétaire de canal à $to";
+      break;
+  }
+  $data['to']=$chan;
+  $data['nick']="\003$color*\003";
+  \bot\events\link($data, $conn);
+}
+
 /* Nick débanni d'un chan */
 function unban(array $data, \bot\IRC $conn) {
   \bot\chanNameToLower($data,"chan");
@@ -233,7 +261,7 @@ function servmsg (array $data, \bot\IRC $conn) {
 
 function privmsg(array $data, \bot\IRC $conn) {
   \bot\chanNameToLower($data,"to");
-  
+
   $dt=new \DateTime();
   $dt=$dt->format("d-m-y H:i:s");
   if ($data['to'][0]!="#" && $data['to'][0]!="&" && !$conn->testPattern("versiononly",$data['msg'])) { /* private message to bot */
