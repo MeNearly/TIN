@@ -39,7 +39,10 @@ require_once 'functions.php';
       <div id="<?=$chan?>" class="tabcontent">
         <table style="border:1px solid;border-color:darkslateblue" width="100%">
           <thead>
-            <tr><th colspan=3>Channel <?=$chan?></th></tr>
+            <tr>
+              <th style="width:2vw"></th><th></th>
+              <th style="width:78vw"></th>
+            </tr>
           </thead>
           <tbody id="<?=$chan?>Tab" class="messages">
 <?php

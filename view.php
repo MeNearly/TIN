@@ -50,8 +50,9 @@ require_once 'functions.php';
     <div id="<?=$chan?>" class="tabcontent">
       <table style="border:1px solid;border-color:darkslateblue;table-layout:fixed" width="100%">
         <thead>
-          <tr><th></th><th></th>
-          <th style="width:85vw">Channel <?=$chan?> du <span id="<?=$chan?>_date_lbl"><?=($date_dt?$date_dt->format("d/m/Y"):"")?></span>&nbsp;&nbsp;
+          <tr>
+            <th style="width:2vw"></th><th></th>
+            <th style="width:78vw">Channel <?=$chan?> du <span id="<?=$chan?>_date_lbl"><?=($date_dt?$date_dt->format("d/m/Y"):"")?></span>&nbsp;&nbsp;
 <!-- ATTENTION CARACTÈRES PARFOIS INVISIBLES POUR LES BOUTONS (suivant l'éditeur de texte) -->
             <input type="date" value="" id="<?=$chan?>_date" onchange="changeDate(event,'<?=$chan?>')" />
 
