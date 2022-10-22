@@ -9,7 +9,7 @@
 ***********/
 
 header("Content-type: text/javascript");
-require_once("params.php");
+require_once 'params.php';
 ?>
 // tableau des channels à visualiser
 var channels=<?=\bot\channels2JS()?>;

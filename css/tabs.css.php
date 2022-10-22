@@ -13,13 +13,13 @@ header("Content-type: text/css");/* Style the tab */
 .clickable:hover {cursor:pointer}
 .clickable.clicked:hover {cursor:default}
 .tab {
-  overflow: hidden;
+  overflow-y: hidden;
   border: 1px solid #ccc;
   background-color: <?=\bot\colors\white?>;
 }
 
 .tabView {
-  overflow: hidden;
+  overflow-y: hidden;
   border: 1px solid #ccc;
   background-color: <?=\bot\colors\lightcyan?>;
 }

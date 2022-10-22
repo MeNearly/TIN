@@ -13,7 +13,7 @@ require_once('Bot.php');
 $Bot=new \bot\Bot();
 
 
-// On crée la connection à Server one
+// On crée la connexion à Server one
 $conn1 = new \bot\IRC("irc.first.server", 6697, true, "server_one", 1807);
 $conn1->setDebug(true);
 $conn1->setDefaultChan("#myChannel");
@@ -38,7 +38,7 @@ $conn1->addEventHandler('servmsg');
 $Bot->addConnection($conn1);
 $Bot->addChannels("server_one",array("#myChannel"));
 
-// On crée la connection à Server Two
+// On crée la connexion à Server Two
 
 $conn2 = new \bot\IRC("irc.second.server", 6697, true, "server_two", 1807, "server_pass", "server_two user reflected to other connection");
 $conn2->setDebug(true);
