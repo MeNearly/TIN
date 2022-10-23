@@ -7,7 +7,6 @@
 ** V1.1b **
 ***********/
 namespace bot;
-session_start();
 
 const ADMINISTRATOR="monitor"; /* administrator username in .htaccess */
 

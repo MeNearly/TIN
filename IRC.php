@@ -53,7 +53,7 @@ class IRC {
   public $connected = false;
 
   /* Linked Chans */
-  private $linkedChannels;
+  public $linkedChannels;
 
   private $owner; /* In case the connection is owned by a bot -- see RunBot.sh for sample */
 
@@ -147,6 +147,10 @@ class IRC {
 
   public function getOwner(): \bot\Bot {
     return $this->owner;
+  }
+
+  public function getHostname():string {
+    return $this->hostname;
   }
 
   public function getShortname():string {
