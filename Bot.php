@@ -52,7 +52,7 @@ class Bot {
   }
 
   public function getConnection(string $shortname) {
-    return $this->connections[strtolower($shortname)]??false;
+    return $this->connections[$shortname]??false;
   }
 
   public function stopConnection(string $name) {

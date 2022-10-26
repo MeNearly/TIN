@@ -208,6 +208,10 @@ class IRC {
     $this->events['other_modes']='/:(?P<nick>.+)!(?P<name>.+)@(?P<host>.+) MODE '.chanPattern.' (?P<mode>([+|\-])([a-zA-Z]+)) (?P<user>.+)/';
   }
 
+  public getEventHandlers():array {
+    return $this->eventHandlers;
+  }
+
   public function testPattern(string $name, string $msg) {
     $pattern=$this->events[$name]??"";
     if ($pattern!="") {
@@ -567,7 +571,7 @@ class IRC {
     if (!isset($this->linkedChannels[$from])) { /* create */
       $this->linkedChannels[$from]=array();
     }
-    $this->linkedChannels[$from][$link->getShortname()]=array("connection" => $link, "channel" => $to);
+    $this->linkedChannels[$from][$link->getShortname()]=array("connection" => $link, "channel" => strtolower($to));
   }
 
   public function reformatLinkedMessage(array $data, string $chan, bool $asMe = false) {
