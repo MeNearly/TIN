@@ -78,26 +78,40 @@ function other_modes(array $data, \bot\IRC $conn) {
   $nick=$data['nick'];
   $to=$data['user'];
   $chan=$data['chan'];
+  // split the modes...
+  $modes=preg_split("@@",substr($data['mode']??" ",1));
+  unset($modes[count($modes)-1]);
+  unset($modes[0]);
+  /***********************/
+  $users=preg_split("@ @",$to);
   $flag=($data['mode']??"")[0]=="+"?"donné":"enlevé";
   $color=$flag=="donné"?"03":"07";
-  $data['msg']="\003$color$nick a $flag le statut d";
-  switch ($data['mode'][1]) {
-    case "h":
-      $data['msg'].="e semi-opérateur de canal à $to";
-      break;
-    case "o":
-      $data['msg'].="'opérateur de canal à $to";
-      break;
-    case "a":
-      $data['msg'].="'administrateur de canal à $to";
-      break;
-    case "q":
-      $data['msg'].="'e propriétaire de canal à $to";
-      break;
+  foreach ($modes as $index => $mode) {
+    switch ($mode) {
+      case "h":
+        $extMsg="le statut de semi-opérateur de canal à $to";
+        break;
+      case "o":
+        $extMsg="le status d'opérateur de canal à $to";
+        break;
+      case "a":
+        $extMsg="le statut d'administrateur de canal à $to";
+        break;
+      case "q":
+        $extMsg="le statut de propriétaire de canal à $to";
+        break;
+      case "e":
+        $extMsg="une exemption à ".$users[$index-1];
+        break;
+      case "I":
+        $extMsg="une exemption d'invitation à ".$users[$index-2];
+        break;
+    }
+    $data['msg']="\003$color$nick a $flag ".$extMsg;
+    $data['to']=$chan;
+    $data['nick']="\003$color*\003";
+    \bot\events\link($data, $conn);
   }
-  $data['to']=$chan;
-  $data['nick']="\003$color*\003";
-  \bot\events\link($data, $conn);
 }
 
 /* Nick débanni d'un chan */

@@ -208,7 +208,7 @@ class IRC {
     $this->events['other_modes']='/:(?P<nick>.+)!(?P<name>.+)@(?P<host>.+) MODE '.chanPattern.' (?P<mode>([+|\-])([a-zA-Z]+)) (?P<user>.+)/';
   }
 
-  public getEventHandlers():array {
+  public function getEventHandlers():array {
     return $this->eventHandlers;
   }
 
