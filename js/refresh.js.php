@@ -103,6 +103,7 @@ function changeDate(event,channel) {
 
   let dateParam=yy+"_"+mm+"_"+dd;
   let channelTab=document.getElementById(channel+"Tab");
+  while(channelTab.firstChild && channelTab.removeChild(channelTab.firstChild));
   channelTab.innerHTML="<i>Chargement...</i>";
   refreshView(channel,dateParam,isToday);
 }
