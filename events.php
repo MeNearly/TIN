@@ -18,10 +18,12 @@ function isChan($str):bool {
 function join(array $data, \bot\IRC $conn) {
   \bot\chanNameToLower($data,"chan");
   $nick=$data['nick'];
-  if ($data['name']==$conn->getNickName()) {
+  if ($nick==$conn->getNickName()) {
     $conn->join(array($data['chan']),array());
+    $data['msg']="\00309$nick, \00312vous entrez sur le salon ".$data['chan']."\003";
+  } else {
+    $data['msg']="\00309$nick (".$data['name']."@".$data['host'].") vient d'entrer sur ".$data['chan']."\003";
   }
-  $data['msg']="\00309$nick (".$data['name']."@".$data['host'].") vient d'entrer sur ".$data['chan']."\003";
   $data['to']=$data['chan'];
   $data['nick']="\00309*\003";
   if (!$conn->chanUserExists($data['chan'],$nick))
@@ -157,7 +159,11 @@ function devoice(array $data, \bot\IRC $conn) {
 function part(array $data, \bot\IRC $conn) {
   \bot\chanNameToLower($data,"chan");
   $nick=$data['nick'];
-  $data['msg']="\00307".$data['nick']." (".$data['name']."@".$data['host'].") est parti\003";
+  if ($nick==$conn->getNickName()) {
+    $data['msg']="\00309$nick, \00307vous quittez le salon ".$data['chan']."\003";
+  } else {
+    $data['msg']="\00307".$nick." (".$data['name']."@".$data['host'].") est parti\003";
+  }
   $data['to']=$data['chan'];
   $data['nick']="\00307*\003";
   if ($nick!=$conn->getNickname()) {
@@ -171,7 +177,11 @@ function part(array $data, \bot\IRC $conn) {
 function quit(array $data, \bot\IRC $conn) {
   $nick=$data['nick'];
   $data['nick']="\00308*\003";
-  $data['msg']="\00308$nick (".$data['name']."@".$data['host'].") a quitté (".$data['reason'].")";
+  if ($nick==$conn->getNickName()) {
+    $data['msg']="\00309$nick, \00304vous avez quitté le serveur ".$conn->getShortname()."\003";
+  } else {
+    $data['msg']="\00308$nick (".$data['name']."@".$data['host'].") a quitté (".$data['reason'].")";
+  }
   $found=false;
   foreach ($conn->getChannels() as $chan) {
     if ($conn->chanUserExists($chan,$nick)) {
