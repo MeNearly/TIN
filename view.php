@@ -23,6 +23,7 @@ $today_ft=$today->format("Y_m_d");
     <center>
      <script type="text/javascript">
        document.body.style.cursor='wait';
+       var tc;
      </script>
 <?php
     $date=$_GET['date']??"";
@@ -41,7 +42,7 @@ $today_ft=$today->format("Y_m_d");
     foreach ($channels as $chan) {
       $chan=strtolower($chan);
 ?>
-        <button class="tablinks" onclick="openChannelTab(event, '<?=$chan?>')" id="<?=$chan?>Button"><?=$chan?></button>
+        <button class="tabView" onclick="openChannelTab(event, '<?=$chan?>')" id="<?=$chan?>Button"><?=$chan?></button>
 <?php
     }
 ?>
@@ -73,6 +74,8 @@ $today_ft=$today->format("Y_m_d");
             <tr><td colspan=3 align="center"><span style="color:darkred">Aucun message pour <?=$chan.($date_dt?($isToday?"aujourd'hui":" au ".$date_dt->format("d/m/Y")):"")?></span></td></tr>
 <?php
       } else {
+?>
+<?php
         $msgs = \bot\messages\loadFile($filename,false);
         $messages = $msgs['messages'];
         $messages = array_reverse($messages);
@@ -93,6 +96,17 @@ $today_ft=$today->format("Y_m_d");
 <?php
     }
 ?>
+      <div class="floater" id="chansFloater"><span class="floater_h" onclick="document.documentElement.scrollTop=0">⤴</span><br/><span class="floater_h" onclick="document.documentElement.scrollTop=10000000">⤵</span></div>
+      <script type="text/javascript">
+        window.onscroll=function() {
+          let f=document.getElementById("chansFloater");
+          var winScrollTop = document.documentElement.scrollTop;
+          var winHeight = window.innerHeight;
+          var floaterHeight = Number.parseInt(window.getComputedStyle(f).height);
+          var top = winScrollTop + Math.floor((winHeight - floaterHeight)/2);
+          f.style.top=top + 'px';
+        };
+      </script>
     </center>
     <script type="text/javascript">
       document.body.style.cursor='default';
@@ -103,9 +117,14 @@ $today_ft=$today->format("Y_m_d");
       if (((new Date()).getTime()-Date.parse(chanTabDate.value))<86400000) {
        isToday=true;
       }
-      let lines=document.getElementsByClassName("Xreverse");
-      for (let i=0;i<lines.length;i++) {
-        reverseVideo(lines[i]);
+      let lines=document.getElementsByClassName("tabline_msg");
+      if (lines.length==0) {
+        let floater=document.getElementById("chansFloater");
+        floater.style.display="none";
+      }
+      let rlines=document.getElementsByClassName("Xreverse");
+      for (let i=0;i<rlines.length;i++) {
+        reverseVideo(rlines[i]);
       }
       channelTab.scrollTop=isToday?1000000:0; /* today? 1000000, else => from start */
     </script>

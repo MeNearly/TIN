@@ -26,7 +26,7 @@ require_once 'functions.php';
     foreach ($channels as $chan) {
       $chan=strtolower($chan);
 ?>
-        <button class="tablinks" onclick="openChannelTab(event, '<?=$chan?>')" id="<?=$chan?>Button"><?=$chan?></button>
+        <button class="tabView" onclick="openChannelTab(event, '<?=$chan?>')" id="<?=$chan?>Button"><?=$chan?></button>
 <?php
     }
 ?>
@@ -59,6 +59,17 @@ require_once 'functions.php';
 <?php
     }
 ?>
+      <div class="floater" id="chansFloater"><span class="floater_h" onclick="document.documentElement.scrollTop=0">⤴</span><br/><span class="floater_h" onclick="document.documentElement.scrollTop=10000000">⤵</span></div>
+      <script type="text/javascript">
+        window.onscroll=function() {
+          let f=document.getElementById("chansFloater");
+          var winScrollTop = document.documentElement.scrollTop;
+          var winHeight = window.innerHeight;
+          var floaterHeight = Number.parseInt(window.getComputedStyle(f).height);
+          var top = winScrollTop + Math.floor((winHeight - floaterHeight)/2);
+          f.style.top=top + 'px';
+        };
+      </script>
     </center>
   <script type="text/javascript">
     refreshAll(true);

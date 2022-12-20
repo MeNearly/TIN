@@ -172,8 +172,11 @@ function refreshView(channel, dateParam='', isToday=false) {
     }
   }).then(text => {
     let channelTab=document.getElementById(channel+"Tab");
+    let floater=document.getElementById("chansFloater");
     if (text!="") {
+      floater.style.display="block";
       channelTab.innerHTML=text;
+      floater.style.display="block";
       /* today? => end, else => from start */
       channelTab.ownerDocument.scrollingElement.scrollTop=isToday?1000000:0;
       /* reverseVideo ... still complicated ^^ */
@@ -182,7 +185,8 @@ function refreshView(channel, dateParam='', isToday=false) {
         reverseVideo(lines[i]);
       }
     } else {
-      let channelTab="<tr><td colspan='3' style='text-align:center;color:darkred'>Aucun message</td></tr>";
+      floater.style.display="none";
+      channelTab.innerHTML="<tr><td colspan='3' style='text-align:center;color:darkred'>Aucun message</td></tr>";
     }
   }).catch (error => {
     alert(error.message);
@@ -213,6 +217,9 @@ function refreshCallback(msgs,channel,scroll=false,init=false) {
   for (let i=0;i<lines.length;i++) {
     reverseVideo(lines[i]);
   }
+  if (l>1 && document.getElementById(channel+"Button").classList.contains("active")) {
+    document.getElementById("chansFloater").style.display="block";
+  }
 }
 
 function openChannelTab(evt, channel) {
@@ -226,14 +233,22 @@ function openChannelTab(evt, channel) {
   }
 
   // Get all elements with class="tablinks" and remove the class "active"
-  tablinks = document.getElementsByClassName("tablinks");
+  tablinks = document.getElementsByClassName("tabView");
   for (i = 0; i < tablinks.length; i++) {
-    tablinks[i].className = tablinks[i].className.replace(" active", "");
+//    tablinks[i].className = tablinks[i].className.replace(" active", "");
+    tablinks[i].classList.remove("active");
   }
 
   // Show the current tab, and add an "active" class to the button that opened the tab
   document.getElementById(channel).style.display = "block";
-  evt.currentTarget.className += " active";
+  evt.currentTarget.classList.add("active");
+  let chanTab=document.getElementById(channel+"Tab");
+  if (chanTab.children.length>1) {
+    document.getElementById("chansFloater").style.display="block";
+    window.onscroll();
+  } else {
+    document.getElementById("chansFloater").style.display="none";
+  }
 }
 
 function mircToHtml(text) {

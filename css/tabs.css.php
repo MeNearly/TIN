@@ -18,11 +18,7 @@ header("Content-type: text/css");/* Style the tab */
   background-color: <?=\bot\colors\white?>;
 }
 
-.tabView {
-  overflow-y: hidden;
-  border: 1px solid #ccc;
-  background-color: <?=\bot\colors\lightcyan?>;
-}
+
 
 /* Style des boutons */
 .tab button {
@@ -39,6 +35,15 @@ header("Content-type: text/css");/* Style the tab */
   background-color: #ddd;
 }
 
+.tabView {
+  overflow-y: hidden;
+  border: 1px solid #ccc;
+  background-color: <?=\bot\colors\lightcyan?>;
+}
+.tabView.active {
+  background-color: #0cc;
+}
+
 .tabView button {
   background-color: inherit;
   float: left;
@@ -51,14 +56,6 @@ header("Content-type: text/css");/* Style the tab */
 
 .tabView button:hover {
   background-color: #ddd;
-}
-
-.tabView button.active {
-  background-color: #ccc;
-}
-
-.tabView button.active {
-  background-color: #ccc;
 }
 
 .tabcontent {
@@ -83,4 +80,27 @@ header("Content-type: text/css");/* Style the tab */
 
 .tabline_msg {
   padding: 2px;
+}
+
+.floater {
+    position: absolute;
+    top: 100px;
+    right: 1px;
+    width: 30px;
+    height: 100px;
+    -webkit-transition: all 0.5s ease-in-out;
+    transition: all 0.5s ease-out;
+    z-index: 100;
+    border-radius: 8px 0 0 8px;
+    padding: 5px;
+    background-color: #41a6d9;
+    color: white;
+    text-align: center;
+    font-size: 2rem;
+    box-sizing: border-box;
+}
+
+.floater_h:hover {
+  color:#EE4444;
+  cursor: pointer;
 }
