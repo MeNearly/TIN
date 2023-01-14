@@ -33,6 +33,7 @@ $conn1->addEventHandler('server_unban','\bot\events\unban');
 $conn1->addEventHandler('voice');
 $conn1->addEventHandler('devoice');
 $conn1->addEventHandler('servmsg');
+$conn1->addEventHandler('other_servmsg');
 
 // On ajoute server_one
 $Bot->addConnection($conn1);

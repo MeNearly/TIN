@@ -76,6 +76,7 @@ class IRC {
     'privmsg'     =>  array(),
     'notice'      =>  array(),
     'servmsg'     =>  array(),
+    'other_servmsg'     =>  array(),
     'other_modes' =>  array()
   );
 
@@ -205,6 +206,8 @@ class IRC {
 
     /* must be the last one !! */
     $this->events['servmsg']='/:(?P<serv>.+) (?P<code>[0-9]+) (?P<to>[^ :]+) (?P<msg>.*)/'; /* message from server with RPL_CODE, must be added AFTER 'userslist' */
+    $this->events['other_servmsg']='/:(?P<serv>.+) (?P<name>[a-zA-Z]+) (?P<to>[^ ]+) (?P<cmd_rpl>[a-zA-Z]+) :(?P<msg>.*)/'; /* message from server with RPL_CODE, must be added AFTER 'userslist' */
+
     $this->events['other_modes']='/:(?P<nick>.+)!(?P<name>.+)@(?P<host>.+) MODE '.chanPattern.' (?P<mode>([+|\-])([a-zA-Z]+)) (?P<user>.+)/';
   }
 

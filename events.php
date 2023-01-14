@@ -278,6 +278,16 @@ function servmsg (array $data, \bot\IRC $conn) {
   }
 }
 
+/* Other kind of message from server */
+/* This is to catch replies to commands in partyline */
+/* don't need to save... */
+function other_servmsg (array $data, \bot\IRC $conn) {
+  $dt=new \DateTime();
+  $dt=$dt->format("d-m-y H:i:s");
+  \bot\partyline\sendReplyAll(($conn->isCmdRunning()?"":PHP_EOL)."[($dt)] ".$data['name']." ".$data['cmd_rpl']." ".$data['msg']."\x07",$conn,true); /* beep */
+  \bot\partyline\sendReplyAll($conn->getPrompt(),$conn,false);
+}
+
 /* Standard PRIVMSG. */
 /* IMPORTANT !! */
 /* PRIVMSG must be explicitely linked with e.g. $conn1->addEventHandler('privmsg','\bot\events\link'); or $conn1->addEventHandler('privmsg','\bot\restrictedLink'); */
