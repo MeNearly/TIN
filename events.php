@@ -28,7 +28,7 @@ function join(array $data, \bot\IRC $conn) {
   $data['nick']="\00309*\003";
   if (!$conn->chanUserExists($data['chan'],$nick))
     $conn->addChanUser($data['chan'],$nick);
-  \bot\saveMessage($data,$conn);
+  \bot\saveMessage($data, $conn);
   \bot\events\link($data, $conn);
 }
 
@@ -56,7 +56,7 @@ function kick(array $data, \bot\IRC $conn) {
   $data['to']=$chan;
   $data['nick']="\00304*\003";
   $conn->removeChanUser($chan,$to);
-  \bot\saveMessage($data,$conn);
+  \bot\saveMessage($data, $conn);
   \bot\events\link($data, $conn);
 }
 
@@ -70,7 +70,7 @@ function ban(array $data, \bot\IRC $conn) {
   $data['to']=$chan;
   $data['nick']="\00304*\003";
   $conn->removeChanUser($chan,$to);
-  \bot\saveMessage($data,$conn);
+  \bot\saveMessage($data, $conn);
   \bot\events\link($data, $conn);
 }
 
@@ -85,33 +85,35 @@ function other_modes(array $data, \bot\IRC $conn) {
   unset($modes[count($modes)-1]);
   unset($modes[0]);
   /***********************/
-  $users=preg_split("@ @",$to);
+  $users=preg_split("@ @",trim($to));
   $flag=($data['mode']??"")[0]=="+"?"donné":"enlevé";
   $color=$flag=="donné"?"03":"07";
   foreach ($modes as $index => $mode) {
+    $who=$users[$index];
     switch ($mode) {
       case "h":
-        $extMsg="le statut de semi-opérateur de canal à $to";
+        $extMsg="le statut de semi-opérateur de canal à $who";
         break;
       case "o":
-        $extMsg="le status d'opérateur de canal à $to";
+        $extMsg="le status d'opérateur de canal à $who";
         break;
       case "a":
-        $extMsg="le statut d'administrateur de canal à $to";
+        $extMsg="le statut d'administrateur de canal à $who";
         break;
       case "q":
-        $extMsg="le statut de propriétaire de canal à $to";
+        $extMsg="le statut de propriétaire de canal à $who";
         break;
       case "e":
-        $extMsg="une exemption à ".$users[$index-1];
+        $extMsg="une exemption à $who";
         break;
       case "I":
-        $extMsg="une exemption d'invitation à ".$users[$index-2];
+        $extMsg="une exemption d'invitation à $who";
         break;
     }
     $data['msg']="\003$color$nick a $flag ".$extMsg;
     $data['to']=$chan;
     $data['nick']="\003$color*\003";
+    \bot\saveMessage($data, $conn);
     \bot\events\link($data, $conn);
   }
 }
@@ -125,7 +127,7 @@ function unban(array $data, \bot\IRC $conn) {
   $data['msg']="\00304$nick a enlevé le(s) ban(s) pour $to sur $chan\003";
   $data['to']=$chan;
   $data['nick']="\00304*\003";
-  \bot\saveMessage($data,$conn);
+  \bot\saveMessage($data, $conn);
   \bot\events\link($data, $conn);
 }
 
@@ -138,7 +140,7 @@ function voice(array $data, \bot\IRC $conn) {
   $data['msg']="\00309$nick a donné la parole à $to sur $chan\003";
   $data['to']=$chan;
   $data['nick']="\00309*\003";
-  \bot\saveMessage($data,$conn);
+  \bot\saveMessage($data, $conn);
   \bot\events\link($data, $conn);
 }
 
@@ -151,7 +153,7 @@ function devoice(array $data, \bot\IRC $conn) {
   $data['msg']="\00310$nick a enlevé la parole à $to sur $chan\003";
   $data['to']=$chan;
   $data['nick']="\00310*\003";
-  \bot\saveMessage($data,$conn);
+  \bot\saveMessage($data, $conn);
   \bot\events\link($data, $conn);
 }
 
@@ -169,7 +171,7 @@ function part(array $data, \bot\IRC $conn) {
   if ($nick!=$conn->getNickname()) {
     $conn->removeChanUser($data['chan'],$nick);
   }
-  \bot\saveMessage($data,$conn);
+  \bot\saveMessage($data, $conn);
   \bot\events\link($data, $conn);
 }
 
@@ -188,7 +190,7 @@ function quit(array $data, \bot\IRC $conn) {
       $found=true;
       $data['to']=$chan;
       $conn->removeChanUser($chan,$nick);
-      \bot\saveMessage($data,$conn);
+      \bot\saveMessage($data, $conn);
       \bot\events\link($data, $conn);
     }
   }
@@ -198,7 +200,7 @@ function quit(array $data, \bot\IRC $conn) {
       $conn->debug("No more channels !","Notice");
     } else { /* Else on 1st chan for $conn */
       $data['to']=strtolower($chans[0]);
-      \bot\saveMessage($data,$conn);
+      \bot\saveMessage($data, $conn);
     }
   }
 }
@@ -224,7 +226,7 @@ function nick(array $data, \bot\IRC $conn) {
     foreach ($chans as $chan) {
       $chan=strtolower($chan);
       $data['to']=$chan;
-      \bot\saveMessage($data,$conn);
+      \bot\saveMessage($data, $conn);
       \bot\events\link($data, $conn);
     }
   }
@@ -240,7 +242,7 @@ function notice(array $data, \bot\IRC $conn) {
     if ($conn->chanUserExists($chan,$nick)) {
       $found=true;
       $data['to']=$chan;
-      \bot\saveMessage($data,$conn);
+      \bot\saveMessage($data, $conn);
       \bot\events\link($data, $conn);
     }
   }
@@ -250,7 +252,7 @@ function notice(array $data, \bot\IRC $conn) {
       $conn->debug("No more channels !","Notice");
     } else { /*Else on 1st chan for $conn */
       $data['to']=strtolower($chans[0]);
-      \bot\saveMessage($data,$conn);
+      \bot\saveMessage($data, $conn);
       \bot\events\link($data, $conn);
     }
   }
@@ -312,7 +314,7 @@ function privmsg(array $data, \bot\IRC $conn) {
       \bot\partyline\sendReplyAll($conn->getPrompt(),$conn,false);
     }
   }
-  \bot\saveMessage($data,$conn);
+  \bot\saveMessage($data, $conn);
 }
 
 
