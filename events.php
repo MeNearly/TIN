@@ -89,7 +89,7 @@ function other_modes(array $data, \bot\IRC $conn) {
   $flag=($data['mode']??"")[0]=="+"?"donné":"enlevé";
   $color=$flag=="donné"?"03":"07";
   foreach ($modes as $index => $mode) {
-    $who=$users[$index];
+    $who=$users[$index-1];
     switch ($mode) {
       case "h":
         $extMsg="le statut de semi-opérateur de canal à $who";
