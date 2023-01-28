@@ -203,9 +203,8 @@ class IRC {
     $this->events['devoice']='/:(?P<nick>.+)!(?P<name>.+)@(?P<host>.+) MODE '.chanPattern.' (?P<devoice>\-([v]+)) (?P<to>.+)/';
 
     $this->events['action']='/\001ACTION (.*)\001/'; /* only used in links, see reformatLinkedMessage */
-
     /* must be the last one !! */
-    $this->events['servmsg']='/:(?P<serv>.+) (?P<code>[0-9]+) (?P<to>[^ :]+) (?P<msg>.*)/'; /* message from server with RPL_CODE, must be added AFTER 'userslist' */
+    $this->events['servmsg']='/:(?P<serv>[^ ]+) (?P<code>[0-9]+) (?P<to>[^ :]+) (?P<msg>.*)/'; /* message from server with RPL_CODE, must be added AFTER 'userslist' */
     $this->events['other_servmsg']='/:(?P<serv>.+) (?P<name>[a-zA-Z]+) (?P<to>[^ ]+) (?P<cmd_rpl>[a-zA-Z]+) :(?P<msg>.*)/'; /* message from server with RPL_CODE, must be added AFTER 'userslist' */
 
     $this->events['other_modes']='/:(?P<nick>.+)!(?P<name>.+)@(?P<host>.+) MODE '.chanPattern.' (?P<mode>([+|\-])([a-zA-Z]+)) (?P<user>.+)/';
@@ -559,6 +558,7 @@ class IRC {
       /* CALL HANDLERS */
       foreach($this->events as $event => $pattern) {
         if (preg_match($pattern, $c, $data)) {
+//          $this->debug("matched ".$event,"DEBUG");
           foreach($this->eventHandlers[$event] as $f) {
             $f($data, $this);
           }
@@ -753,7 +753,7 @@ class IRC {
   }
 
   private function read($bufferSize = 65535):array {
-    $content = fread($this->socket, $bufferSize);
+    $content = fgets($this->socket, $bufferSize);
     if (!preg_match('/[\n]$/', $content)) {
       $content .= fgets($this->socket, $bufferSize);
     }
