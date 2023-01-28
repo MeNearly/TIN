@@ -10,6 +10,11 @@
 *****************************************************/
 namespace bot\events;
 
+function getNowSFormat():string {
+  $dt=new \DateTime();
+  return $dt->format("d-m-y H:i:s");
+}
+
 function isChan($str):bool {
   return ($str[0]=="#" || $str[0]=="&");
 }
@@ -257,8 +262,7 @@ function notice(array $data, \bot\IRC $conn) {
     }
   }
   /* On notifie en partyline */
-  $dt=new \DateTime();
-  $dt=$dt->format("d-m-y H:i:s");
+  $dt=\bot\events\getNowSFormat();
   \bot\partyline\sendReplyAll(PHP_EOL."([$dt] >-".$nick."-<) ".$data['msg']."\x07",$conn,true); /* beep */
   \bot\partyline\sendReplyAll($conn->getPrompt(),$conn,false);
 }
@@ -267,11 +271,10 @@ function notice(array $data, \bot\IRC $conn) {
 /* This is to catch replies to commands in partyline */
 /* don't need to save... */
 function servmsg (array $data, \bot\IRC $conn) {
-  $dt=new \DateTime();
-  $dt=$dt->format("d-m-y H:i:s");
+  $dt=\bot\events\getNowSFormat();
   \bot\partyline\sendReplyAll(($conn->isCmdRunning()?"":PHP_EOL)."[($dt)] ".$data['code']." ".$data['msg']."\x07",$conn,true); /* beep */
 
-  if ($data['code']=='311') { /* whois or other running command */
+  if ($data['code']=='311') { /* whois or other running command (?) */
     $conn->setCmdRunning(true);
   }
   if ($data['code']=='318' || !$conn->isCmdRunning()) { /* for running whois */
@@ -284,8 +287,7 @@ function servmsg (array $data, \bot\IRC $conn) {
 /* This is to catch replies to commands in partyline */
 /* don't need to save... */
 function other_servmsg (array $data, \bot\IRC $conn) {
-  $dt=new \DateTime();
-  $dt=$dt->format("d-m-y H:i:s");
+  $dt=\bot\events\getNowSFormat();
   \bot\partyline\sendReplyAll(($conn->isCmdRunning()?"":PHP_EOL)."[($dt)] ".$data['name']." ".$data['cmd_rpl']." ".$data['msg']."\x07",$conn,true); /* beep */
   \bot\partyline\sendReplyAll($conn->getPrompt(),$conn,false);
 }
@@ -298,8 +300,7 @@ function other_servmsg (array $data, \bot\IRC $conn) {
 function privmsg(array $data, \bot\IRC $conn) {
   \bot\chanNameToLower($data,"to");
 
-  $dt=new \DateTime();
-  $dt=$dt->format("d-m-y H:i:s");
+  $dt=\bot\events\getNowSFormat();
   if ($data['to'][0]!="#" && $data['to'][0]!="&" && !$conn->testPattern("versiononly",$data['msg'])) { /* private message to bot */
     echo $conn->getShortname()." : ".$data['nick']." => ".$data['msg'].PHP_EOL;
     \bot\partyline\sendReplyAll(PHP_EOL."[($dt) ".$data['nick']."] ".$data['msg']."\x07",$conn,true); /* Beep */
