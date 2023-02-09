@@ -52,6 +52,9 @@ class IRC {
   private $mustStop = false;
   public $connected = false;
 
+  private $MAX_RECONNECT = 5;
+  private $reconnections = 0;
+
   /* Linked Chans */
   public $linkedChannels;
 
@@ -543,6 +546,23 @@ class IRC {
         continue;
       }
       $this->debug($c);
+
+      /* Connection closed */
+      if (preg_match('/^ERROR :Closing Link: ([^\ ]+) (.*)$/', $c, $matches)) {
+        echo "*** /!\\ ***".$this->getShortname()." Connexion closed, reason : ".$matches[2].PHP_EOL;
+        fclose($this->socket);
+        $this->connected=false;
+        $this->debug("*** Trying to reconnect... ***");
+        while (($this->reconnections++) < $this->MAX_RECONNECT && $this->connect()===false) {
+          $this->debug("*** reconnect, attempt ".$this->reconnections);
+        }
+        if (!$this->connected) {
+          $this->debug("Reconnection failed, ending up");
+        } else {
+          $this->reconnections=0;
+        }
+        break;
+      }
 
       /* VERSION */
       if (preg_match($this->events['versionmsg'],$c,$data)) {

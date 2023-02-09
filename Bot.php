@@ -111,7 +111,7 @@ class Bot {
         $name=$conn->getShortname();
         $this->resetBotSent();
         if ($flags[$name] && $conn->connected) {
-          $atLeastOne|=$conn->listen(false);
+          $atLeastOne|=$conn->listen(false); /* false => must cycle between IRC connections */
         }
       }
     }
