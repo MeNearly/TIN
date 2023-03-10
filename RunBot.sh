@@ -24,6 +24,9 @@ $conn1->addEventHandler('privmsg','\bot\events\link'); /* to allow links */
 $conn1->addEventHandler('notice');
 $conn1->addEventHandler('nick');
 $conn1->addEventHandler('join');
+/* On peut aussi faire ceci */
+//$conn1->addCapability('extended-join');
+//$conn1->addEventHandler('ejoin','\bot\events\join');
 $conn1->addEventHandler('part');
 $conn1->addEventHandler('quit');
 $conn1->addEventHandler('kick');

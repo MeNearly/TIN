@@ -27,7 +27,10 @@ function join(array $data, \bot\IRC $conn) {
     $conn->join(array($data['chan']),array());
     $data['msg']="\00309$nick, \00312vous entrez sur le salon ".$data['chan']."\003";
   } else {
-    $data['msg']="\00309$nick (".$data['name']."@".$data['host'].") vient d'entrer sur ".$data['chan']."\003";
+    $einfos=$data['extjoin']??"";
+    if ($einfos!="")
+      $einfos=" ".$einfos;
+    $data['msg']="\00309$nick (".$data['name']."@".$data['host']."$einfos) vient d'entrer sur ".$data['chan']."\003";
   }
   $data['to']=$data['chan'];
   $data['nick']="\00309*\003";

@@ -42,6 +42,9 @@ class IRC {
   /* Handlers & event */
   private $events = array ();
 
+  /* capabilities IRCv3*/
+  private $caps = array();
+
   /* For control connexion */
   private $userPort;
   private $maxUsers = 5;
@@ -66,6 +69,7 @@ class IRC {
     'userslist'   =>  array(),
     'nickslist'   =>  array(),
     'join'        =>  array(),
+    'ejoin'        =>  array(),
     'part'        =>  array(),
     'quit'        =>  array(),
     'kick'        =>  array(),
@@ -182,6 +186,12 @@ class IRC {
     return $this->defaultChan;
   }
 
+  public function addCapability(string $cap) {
+    $cap=trim($cap);
+    if ($cap!="")
+      $this->caps[]=$cap;
+  }
+
   private function initEventsPatterns() {
     $key='/:(?P<server>.+) 353 '.$this->nickname.' . '.chanPattern.' :(?P<list>.*)/';
     $this->events['userslist']=$key;
@@ -189,6 +199,7 @@ class IRC {
     $this->events['nickslist']='/353 . '.chanPattern.' :(?P<list>.+)/';
 
     $this->events['join']='/:(?P<nick>.+)!(?P<name>.+)@(?P<host>.+) JOIN :'.chanPattern.'/';
+    $this->events['ejoin']='/:(?P<nick>.+)!(?P<name>.+)@(?P<host>.+) JOIN '.chanPattern.' (?P<extjoin>.*)/';
     $this->events['part']='/:(?P<nick>.+)!(?P<name>.+)@(?P<host>.+) PART '.chanPattern.'/';
     $this->events['quit']='/:(?P<nick>.+)!(?P<name>.+)@(?P<host>.+) QUIT :(?P<reason>.*)/';
     $this->events['nick']='/:(?P<userHandler>.+) NICK :(?P<newnick>.+)/';
@@ -211,6 +222,17 @@ class IRC {
     $this->events['other_servmsg']='/:(?P<serv>.+) (?P<name>[a-zA-Z]+) (?P<to>[^ ]+) (?P<cmd_rpl>[a-zA-Z]+) :(?P<msg>.*)/'; /* message from server with RPL_CODE, must be added AFTER 'userslist' */
 
     $this->events['other_modes']='/:(?P<nick>.+)!(?P<name>.+)@(?P<host>.+) MODE '.chanPattern.' (?P<mode>([+|\-])([a-zA-Z]+)) (?P<user>.+)/';
+  }
+
+  public function setPattern(string $name, string $pattern):bool {
+    $name=trim($name);
+    $pattern=trim($attern);
+    if ($name=="" || $pattern=="") {
+      $this->debug("Name and pattern cannot be empty");
+      return false;
+    }
+    $this->events[$name]=$pattern;
+    return true;
   }
 
   public function getEventHandlers():array {
@@ -416,6 +438,12 @@ class IRC {
           $flag=true;
         }
       }
+    }
+
+    /* Capabilities */
+    foreach ($this->caps as $cap) {
+      $this->send("CAP REQ $cap");
+      $this->debug("Requesting CAP $cap");
     }
 
     /* Finally THE USERS SOCKET */
