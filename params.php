@@ -1,16 +1,16 @@
 <?php
-/*********************************************
-** Constantes/Paramètres pour les connexion **
-** (c) 2022 MeNearly@gmail.com GPL          **
-**********************************************/
+/*******************************************************
+** Constantes/Paramètres pour les connexion           **
+** (c) 2020-202x ksynet.fr MeNearly@gmail.com GPL     **
+********************************************************/
 /**********
-** V1.1b **
+** V1.1c **
 ***********/
 namespace bot;
 
 const ADMINISTRATOR="monitor"; /* administrator username in .htaccess */
 
-const version_reply="Tin Irc Node v1.2 (c) 2020-2022 ksynet.fr";
+const version_reply="Tin Irc Node v1.2c (c) 2020-202x ksynet.fr";
 const quitMsg="Gone with the wind...";
 
 const messagesDir="/home/YOU/monitoring/JSON/";

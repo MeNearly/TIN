@@ -1,4 +1,9 @@
 <?php
+/*****************************************
+**  Telnet partyline commands           **
+** (c) 2020-202x meNearly@gmail.com     **
+** All source files are under GPL       **
+*****************************************/
 namespace bot\partyline;
 
 require_once 'events.php';
@@ -41,9 +46,9 @@ const HELP="`Partyline` active commands are :
 ----------------------------------------------------------
 - /help\t\t\t => THIS short help";
 
-function sendReply($token, string $reply, \bot\IRC $conn, bool $eol=true) {
+function sendReply(int $token, string $reply, \bot\IRC $conn, bool $eol=true):void {
   try {
-    if ($conn->hasUser()) {
+    if ($conn->hasUsers()) {
       $socket=$conn->getUserSocket($token);
       if ($socket) {
         socket_write($socket,$reply.($eol?PHP_EOL:""));
@@ -53,7 +58,8 @@ function sendReply($token, string $reply, \bot\IRC $conn, bool $eol=true) {
     $conn->debug("Unknown error :".$ex->message);
   }
 }
-function sendReplyAll(string $reply, \bot\IRC $conn, bool $eol=true) {
+
+function sendReplyAll(string $reply, \bot\IRC $conn, bool $eol=true):void {
   try {
     $sockets=$conn->getUsersSockets();
     foreach ($sockets as $token => $socket) {
@@ -75,8 +81,7 @@ function getChan(array &$words, \bot\IRC $conn):string {
   return $chan;
 }
 
-
-function parseUserInput($token, $line, \bot\IRC $conn) {
+function parseUserInput(int $token, string $line, \bot\IRC $conn):void {
   $exited=false;
   $words=preg_split("@ @",$line);
   switch ($words[0]) {
@@ -339,6 +344,6 @@ function parseUserInput($token, $line, \bot\IRC $conn) {
         $conn->sendTo($to,$first." ".$msg);
       }
   }
-  if ($conn->hasUser() && !$exited)
+  if ($conn->hasUsers() && !$exited)
     sendReply($token,$conn->getPrompt(),$conn,false);
 }

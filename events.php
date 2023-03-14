@@ -5,7 +5,7 @@
 **   the messages from the server                  **
 ** They must explicetly be specified when creating **
 **    the connection to IRC (see class \bot\IRC )  **
-** (c) 2020-2022 meNearly@gmail.com  **
+** (c) 2020-202x meNearly@gmail.com                **
 ** All source files are under GPL                  **
 *****************************************************/
 namespace bot\events;
@@ -15,12 +15,12 @@ function getNowSFormat():string {
   return $dt->format("d-m-y H:i:s");
 }
 
-function isChan($str):bool {
+function isChan(string $str):bool {
   return ($str[0]=="#" || $str[0]=="&");
 }
 
 /* Nick entrant sur un chan */
-function join(array $data, \bot\IRC $conn) {
+function join(array $data, \bot\IRC $conn):void {
   \bot\chanNameToLower($data,"chan");
   $nick=$data['nick'];
   if ($nick==$conn->getNickName()) {
@@ -41,7 +41,7 @@ function join(array $data, \bot\IRC $conn) {
 }
 
 /* Liste des nicks reçue */
-function userslist(array $data, \bot\IRC $conn) {
+function userslist(array $data, \bot\IRC $conn):void {
   \bot\chanNameToLower($data,"chan");
   $conn->debug("getting users list from ".$data['chan'],"Notice");
   $list=preg_split("@ @",$data['list']);
@@ -54,7 +54,7 @@ function userslist(array $data, \bot\IRC $conn) {
 }
 
 /* Nick kické d'un chan */
-function kick(array $data, \bot\IRC $conn) {
+function kick(array $data, \bot\IRC $conn):void {
   \bot\chanNameToLower($data,"chan");
   $nick=$data['nick'];
   $to=$data['to'];
@@ -69,7 +69,7 @@ function kick(array $data, \bot\IRC $conn) {
 }
 
 /* Nick banni d'un chan */
-function ban(array $data, \bot\IRC $conn) {
+function ban(array $data, \bot\IRC $conn):void {
   \bot\chanNameToLower($data,"chan");
   $nick=$data['nick'];
   $to=$data['to'];
@@ -83,7 +83,7 @@ function ban(array $data, \bot\IRC $conn) {
 }
 
 /* Autres modes utilisateur */
-function other_modes(array $data, \bot\IRC $conn) {
+function other_modes(array $data, \bot\IRC $conn):void {
   \bot\chanNameToLower($data,"chan");
   $nick=$data['nick'];
   $to=$data['user'];
@@ -127,7 +127,7 @@ function other_modes(array $data, \bot\IRC $conn) {
 }
 
 /* Nick débanni d'un chan */
-function unban(array $data, \bot\IRC $conn) {
+function unban(array $data, \bot\IRC $conn):void {
   \bot\chanNameToLower($data,"chan");
   $nick=$data['nick'];
   $to=$data['to'];
@@ -140,7 +140,7 @@ function unban(array $data, \bot\IRC $conn) {
 }
 
 /* Nick gagne un voice */
-function voice(array $data, \bot\IRC $conn) {
+function voice(array $data, \bot\IRC $conn):void {
   \bot\chanNameToLower($data,"chan");
   $nick=$data['nick'];
   $to=$data['to'];
@@ -153,7 +153,7 @@ function voice(array $data, \bot\IRC $conn) {
 }
 
 /* Nick perd un voice */
-function devoice(array $data, \bot\IRC $conn) {
+function devoice(array $data, \bot\IRC $conn):void {
   \bot\chanNameToLower($data,"chan");
   $nick=$data['nick'];
   $to=$data['to'];
@@ -166,7 +166,7 @@ function devoice(array $data, \bot\IRC $conn) {
 }
 
 /* Nick quittant un chan */
-function part(array $data, \bot\IRC $conn) {
+function part(array $data, \bot\IRC $conn):void {
   \bot\chanNameToLower($data,"chan");
   $nick=$data['nick'];
   if ($nick==$conn->getNickName()) {
@@ -184,7 +184,7 @@ function part(array $data, \bot\IRC $conn) {
 }
 
 /* Nick quittant le serveur (=> uniquement sur les chans ou apparaît 'nick' sinon le premier par défaut) */
-function quit(array $data, \bot\IRC $conn) {
+function quit(array $data, \bot\IRC $conn):void {
   $nick=$data['nick'];
   $data['nick']="\00308*\003";
   if ($nick==$conn->getNickName()) {
@@ -214,7 +214,7 @@ function quit(array $data, \bot\IRC $conn) {
 }
 
 /* Changement de nick (=> uniquement sur les chans ou apparaît 'nick')*/
-function nick(array $data, \bot\IRC $conn) {
+function nick(array $data, \bot\IRC $conn):void {
   $regexp='/(?P<nick>.+)!(?P<username>.+)@(?P<host>.+)/';
   if (preg_match($regexp,$data['userHandler'],$nickvalues)) {
     $nick=$nickvalues['nick'];
@@ -241,7 +241,7 @@ function nick(array $data, \bot\IRC $conn) {
 }
 
 /* Notice received, notify on all chans where it appears, else on 1st available chan */
-function notice(array $data, \bot\IRC $conn) {
+function notice(array $data, \bot\IRC $conn):void {
   $found=false;
   $nick=$data['nick'];
   $data['nick']="\00310>-$nick-<\003";
@@ -273,7 +273,7 @@ function notice(array $data, \bot\IRC $conn) {
 /* Message from server */
 /* This is to catch replies to commands in partyline */
 /* don't need to save... */
-function servmsg (array $data, \bot\IRC $conn) {
+function servmsg (array $data, \bot\IRC $conn):void {
   $dt=\bot\events\getNowSFormat();
   \bot\partyline\sendReplyAll(($conn->isCmdRunning()?"":PHP_EOL)."[($dt)] ".$data['code']." ".$data['msg']."\x07",$conn,true); /* beep */
 
@@ -289,7 +289,7 @@ function servmsg (array $data, \bot\IRC $conn) {
 /* Other kind of message from server */
 /* This is to catch replies to commands in partyline */
 /* don't need to save... */
-function other_servmsg (array $data, \bot\IRC $conn) {
+function other_servmsg (array $data, \bot\IRC $conn):void {
   $dt=\bot\events\getNowSFormat();
   \bot\partyline\sendReplyAll(($conn->isCmdRunning()?"":PHP_EOL)."[($dt)] ".$data['name']." ".$data['cmd_rpl']." ".$data['msg']."\x07",$conn,true); /* beep */
   \bot\partyline\sendReplyAll($conn->getPrompt(),$conn,false);
@@ -300,7 +300,7 @@ function other_servmsg (array $data, \bot\IRC $conn) {
 /* PRIVMSG must be explicitely linked with e.g. $conn1->addEventHandler('privmsg','\bot\events\link'); or $conn1->addEventHandler('privmsg','\bot\restrictedLink'); */
 /* This is to allow other events to use link */
 
-function privmsg(array $data, \bot\IRC $conn) {
+function privmsg(array $data, \bot\IRC $conn):void {
   \bot\chanNameToLower($data,"to");
 
   $dt=\bot\events\getNowSFormat();
@@ -323,13 +323,13 @@ function privmsg(array $data, \bot\IRC $conn) {
 
 
 /* For mirroring an event */
-function link(array $data, \bot\IRC $conn) {
+function link(array $data, \bot\IRC $conn):void {
   \bot\chanNameToLower($data,"to");
   $conn->reflectToLink($data['to'],$data); /* chan or user = $data['to'] */
 }
 
 /* will only reflect messages from $conn->ownerNick */
-function restrictedLink(array $data, \bot\IRC $conn) {
+function restrictedLink(array $data, \bot\IRC $conn):void {
   $from=strtolower($data['nick']);
   if ($conn->isOwnerNick($from)) {
     $words=preg_split("/ /",$data['msg']);

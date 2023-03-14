@@ -5,9 +5,10 @@
 ** MeNearly@gmail.com                      **
 *********************************************/
 /**********
-** V1.1b **
+** V1.1c **
 ***********/
 namespace bot;
+require_once 'Bot.php';
 require_once 'functions.php';
 require_once 'partyline.php';
 
@@ -16,56 +17,60 @@ const chanPattern="(?P<chan>(#|&)[a-zA-Z0-9\-\+_\.]+)";
 
 class IRC {
 
-  private $shortname;
+  private string $shortname;
 
   /* Server */
-  private $hostname, $port, $ssl, $socket, $password;
+  private $hostname;
+  private int $port;
+  private bool $ssl;
+  private $socket;
+  private string|null $password;
   private $defaultChan="";
 
-  private $quitMsg=\bot\quitMsg;
+  private string $quitMsg=\bot\quitMsg;
 
   /* User used for this connection */
-  private $nickname, $username, $realname, $userpass;
-  private $nickServ="NickServ";
+  private string $nickname, $username, $realname, $userpass;
+  private string $nickServ="NickServ";
 
-  private $userMode="+iB";
+  private string $userMode="+iB";
 
-  private $runningCmd=false;
+  private bool $runningCmd=false;
 
   /* CHANS */
-  private $channels;
-  public $channelsUsers;
+  private array $channels;
+  public array $channelsUsers;
 
   /* Debug */
-  private $DEBUG = true;
+  private bool $DEBUG = true;
 
   /* Handlers & event */
-  private $events = array ();
+  private array $events = array ();
 
   /* capabilities IRCv3*/
-  private $caps = array();
+  private array $caps = array();
 
   /* For control connexion */
-  private $userPort;
-  private $maxUsers = 5;
+  private int $userPort;
+  private int $maxUsers = 5;
   private $usersListeningSocket = NULL;
-  private $usersConnected = array();
-  private $userTokenCounter = 0;
+  private array $usersConnected = array();
+  private int $userTokenCounter = 0;
 
-  private $mustStop = false;
-  public $connected = false;
+  private bool $mustStop = false;
+  public bool $connected = false;
 
-  private $MAX_RECONNECT = 5;
-  private $reconnections = 0;
+  private int $MAX_RECONNECT = 5;
+  private int $reconnections = 0;
 
   /* Linked Chans */
-  public $linkedChannels;
+  public array $linkedChannels;
 
-  private $owner; /* In case the connection is owned by a bot -- see RunBot.sh for sample */
+  private \bot\Bot|NULL $owner; /* In case the connection is owned by a bot -- see RunBot.sh for sample */
 
   private $ownersNicks = array(); /* used by \bot\restrictedLink */
 
-  protected $eventHandlers = array(
+  protected array $eventHandlers = array(
     'userslist'   =>  array(),
     'nickslist'   =>  array(),
     'join'        =>  array(),
@@ -141,11 +146,11 @@ class IRC {
     $this->nickname=$nick;
   }
 
-  public function getNickName(): string {
+  public function getNickName():string {
     return $this->nickname;
   }
 
-  public function setUserMode($mode_s) {
+  public function setUserMode(string $mode_s) {
     $this->userMode=$mode_s;
   }
 
@@ -153,7 +158,7 @@ class IRC {
     $this->owner=$owner;
   }
 
-  public function getOwner(): \bot\Bot {
+  public function getOwner():\bot\Bot {
     return $this->owner;
   }
 
@@ -165,7 +170,7 @@ class IRC {
     return $this->shortname;
   }
 
-  public function isOwnerNick($nick) {
+  public function isOwnerNick($nick):bool {
     return in_array(strtolower($nick), $this->ownersNicks);
   }
 
@@ -239,7 +244,7 @@ class IRC {
     return $this->eventHandlers;
   }
 
-  public function testPattern(string $name, string $msg) {
+  public function testPattern(string $name, string $msg):array|false {
     $pattern=$this->events[$name]??"";
     if ($pattern!="") {
       $result=preg_match($pattern,$msg,$matches);
@@ -474,7 +479,7 @@ class IRC {
     }
     while (!$this->mustStop) { /* Partylines over telnet */
       $this->acceptUser();
-      if ($this->hasUser()) {
+      if ($this->hasUsers()) {
         $read=$this->usersConnected;
         $write=array();
         $except=array();
@@ -484,7 +489,7 @@ class IRC {
       }
       if ($result===false) {
         echo "*** ".socket_strerror((socket_last_error()))." ***".PHP_EOL;
-      } elseif ($this->hasUser() && $result>0) {
+      } elseif ($this->hasUsers() && $result>0) {
         foreach ($this->usersConnected as $token => $userSocket) {
           $userInput=$this->readUser($token);
           if (is_array($userInput) && count($userInput)>0) {
@@ -536,11 +541,11 @@ class IRC {
     }
   }
 
-  public function hasUser() {
+  public function hasUsers():bool {
     return count($this->usersConnected)>0;
   }
 
-  public function disconnectUser($token) {
+  public function disconnectUser(int $token) {
     socket_close($this->usersConnected[$token]);
     unset($this->usersConnected[$token]);
   }
@@ -552,7 +557,7 @@ class IRC {
     }
   }
 
-  public function getUserSocket($token) {
+  public function getUserSocket(int $token) {
     $s=$this->usersConnected[$token]??null;
     if (!$s) {
       $this->debug("Token no more valid : $token","ERROR");
@@ -625,7 +630,7 @@ class IRC {
     $this->linkedChannels[$from][$link->getShortname()]=array("connection" => $link, "channel" => strtolower($to));
   }
 
-  public function reformatLinkedMessage(array $data, string $chan, bool $asMe = false) {
+  public function reformatLinkedMessage(array $data, string $chan, bool $asMe = false):string {
     $nick=$data['nick'];
     if ($matches=$this->testPattern("action",$data['msg'])) {
       if (!$asMe) {
@@ -831,7 +836,7 @@ class IRC {
     $this->debug("$user removed from $chan users list","Notice");
   }
 
-  public function changeUserNick(string $user, string $newnick) { /* returns impacted channels */
+  public function changeUserNick(string $user, string $newnick):array { /* returns impacted channels */
     $chans=array();
     foreach ($this->channelsUsers as $chan => $users) {
       if (($index=array_search($user,$users))!==false) {
@@ -843,7 +848,7 @@ class IRC {
     return $chans;
   }
 
-  public function chanUserExists($chan,$user) {
+  public function chanUserExists($chan,$user):bool {
     if (isset($this->channelsUsers[$chan])) {
       return (array_search($user,$this->channelsUsers[$chan])!==false);
     } else
@@ -869,7 +874,7 @@ class IRC {
     }
   }
 
-  public function getPrompt() {
+  public function getPrompt():string {
     return $this->defaultChan."(".$this->shortname.")> ";
   }
 
@@ -882,8 +887,8 @@ class IRC {
     }
   }
 
-  private function readUser($token, $bufferSize = 8192) {
-    if (!$this->hasUser()) {
+  private function readUser($token, $bufferSize = 8192):array {
+    if (!$this->hasUsers()) {
       return array("");
     }
     try {
