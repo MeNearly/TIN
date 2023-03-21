@@ -4,20 +4,26 @@ namespace bot;
 require 'IRC.php';
 
 class Bot {
-  private $version_reply;
+  private string $pidFile;
+  private string $version_reply;
 
-  private $connections;
+  private array $connections;
 
-  private $connectionsChannels;
+  private array $connectionsChannels;
 
-  private $botSent;
+  private array $botSent;
 
-  public function __construct(string $version=\bot\version_reply) {
+  public function __construct(string $pidFile="./pid.tinBot", string $version=\bot\version_reply) {
+    $this->pidFile=$pidFile;
     $this->version_reply=$version;
     $this->connections=array();
     $this->connectionsChannels=array();
     $this->connectionsChannelsKeys=array();
     $this->botSent=array();
+  }
+
+  public function getPIDFile(): string {
+    return $this->pidFile;
   }
 
   public function getVersionReply(): string {
@@ -119,7 +125,7 @@ class Bot {
     echo "-> Zip older files...".PHP_EOL;
     \bot\messages\zipOlderFiles();
     echo "TIN Bot ended".PHP_EOL;
-    unlink("./pid.tinBot");
+    unlink($this->getPIDFile());
   }
 }
 

@@ -10,7 +10,7 @@
 
 require_once('Bot.php');
 
-$Bot=new \bot\Bot();
+$Bot=new \bot\Bot(version: "TIN is neat !", pidFile: "./pid.myBotname");
 
 
 // On crée la connexion à Server one

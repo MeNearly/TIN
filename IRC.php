@@ -20,12 +20,12 @@ class IRC {
   private string $shortname;
 
   /* Server */
-  private $hostname;
+  private string $hostname;
   private int $port;
   private bool $ssl;
-  private $socket;
+  private $socket; /* resource ... */
   private string|null $password;
-  private $defaultChan="";
+  private string $defaultChan="";
 
   private string $quitMsg=\bot\quitMsg;
 
@@ -53,7 +53,7 @@ class IRC {
   /* For control connexion */
   private int $userPort;
   private int $maxUsers = 5;
-  private $usersListeningSocket = NULL;
+  private $usersListeningSocket = NULL; /* resource ... */
   private array $usersConnected = array();
   private int $userTokenCounter = 0;
 
