@@ -74,10 +74,28 @@ function ban(array $data, \bot\IRC $conn):void {
   $nick=$data['nick'];
   $to=$data['to'];
   $chan=$data['chan'];
-  $data['msg']="\00304$nick a posé un(des) ban(s) pour $to sur $chan\003";
+  $len=strlen($data['btype']);
+  $art=($len>2)?"des":"un";
+  $plur=($len>2)?"s":"";
+  $data['msg']="\00304$nick a posé $art ban$plur pour $to sur $chan\003";
   $data['to']=$chan;
   $data['nick']="\00304*\003";
   $conn->removeChanUser($chan,$to);
+  \bot\saveMessage($data, $conn);
+  \bot\events\link($data, $conn);
+}
+
+/* Nick débanni d'un chan */
+function unban(array $data, \bot\IRC $conn):void {
+  \bot\chanNameToLower($data,"chan");
+  $nick=$data['nick'];
+  $to=$data['to'];
+  $chan=$data['chan'];
+  $len=strlen($data['btype']);
+  $plur=($len>2)?"s":"";
+  $data['msg']="\00304$nick a enlevé le$plur ban$plur pour $to sur $chan\003";
+  $data['to']=$chan;
+  $data['nick']="\00304*\003";
   \bot\saveMessage($data, $conn);
   \bot\events\link($data, $conn);
 }
@@ -124,19 +142,6 @@ function other_modes(array $data, \bot\IRC $conn):void {
     \bot\saveMessage($data, $conn);
     \bot\events\link($data, $conn);
   }
-}
-
-/* Nick débanni d'un chan */
-function unban(array $data, \bot\IRC $conn):void {
-  \bot\chanNameToLower($data,"chan");
-  $nick=$data['nick'];
-  $to=$data['to'];
-  $chan=$data['chan'];
-  $data['msg']="\00304$nick a enlevé le(s) ban(s) pour $to sur $chan\003";
-  $data['to']=$chan;
-  $data['nick']="\00304*\003";
-  \bot\saveMessage($data, $conn);
-  \bot\events\link($data, $conn);
 }
 
 /* Nick gagne un voice */

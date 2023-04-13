@@ -705,9 +705,9 @@ class IRC {
 
         /* Send to all linked connections */
         $message=$this->reformatLinkedMessage($data,$to,true); /* as Me */
-        if (!\bot\events\isChan($msg_to)) {
+        /*if (!\bot\events\isChan($msg_to)) {
           $message="(".$data['nick'].") ".$message;
-        }
+        }*/
         foreach ($this->channels as $chan) {
           if (array_key_exists($chan,$this->linkedChannels)) {
             foreach ($this->linkedChannels[$chan] as $name => $conn) {
@@ -726,7 +726,11 @@ class IRC {
             foreach ($this->linkedChannels[$chan] as $name => $conn) {
               if (!$this->owner->botSent($name)) {
                 $data['to']=$chan;
-                $message="\x0303\x02--".$data['nick']."--\x03\x02 ".$data['msg'];
+                if ($matches=$this->testPattern("action",$data['msg'])) {
+                  $message="\x0303\x02--\x0302".$data['nick']."\x0303--\x03\x02 ".$matches[1];
+                } else {
+                  $message="\x0303\x02--".$data['nick']."--\x03\x02 ".$data['msg'];
+                }
                 $conn['connection']->sendTo($conn['channel'],$message);
                 echo "Sent message to ".$conn['channel']." on ".$conn['connection']->getShortname().PHP_EOL;
                 $this->owner->setBotSent($name); /* to avoid further PM to $conn['connection'] */
