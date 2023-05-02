@@ -57,6 +57,10 @@ class Bot {
     return $this->connections;
   }
 
+  public function getConnectionChannels(string $channel):array {
+    return $this->connectionsChannels[$channel]??array();
+  }
+
   public function getConnection(string $shortname) {
     return $this->connections[$shortname]??false;
   }
