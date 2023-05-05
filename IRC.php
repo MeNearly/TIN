@@ -31,6 +31,8 @@ class IRC {
 
   /* User used for this connection */
   private string $nickname, $username, $realname, $userpass;
+  private bool $hasNickSuffix=false;
+  private string $nickSuffixSep="|";
   private string $nickServ="NickServ";
 
   private string $userMode="+iB";
@@ -148,6 +150,14 @@ class IRC {
 
   public function getNickName():string {
     return $this->nickname;
+  }
+
+  public function setNickSuffixSep(string $sep) {
+    $this->nickSuffixSep=$sep;
+  }
+
+  public function setHasNickSuffix(bool $hs=true) {
+    $this->hasNickSuffix=$hs;
   }
 
   public function setUserMode(string $mode_s) {
@@ -396,7 +406,19 @@ class IRC {
     }
 
     /* NICK */
-    $this->send('NICK '. $this->nickname);
+    /* avoid suffix in nickname */
+    if ($this->hasNickSuffix && $this->nickSuffixSep!="") {
+      $indexSuffix=strpos($this->nickname,$this->nickSuffixSep);
+      if ($indexSuffix!==false) {
+        echo "*********************************".PHP_EOL;
+        $newNickname=substr($this->nickname,0,$indexSuffix);
+        echo "Change nickname from ".$this->nickname." to $newNickname".PHP_EOL;
+        echo "*********************************".PHP_EOL;
+        $this->setNickName($newNickname);
+        $this->initEventsPatterns();
+      }
+    }
+    $this->send('NICK :'. $this->nickname);
     /* TODO: si nick déjà pris ... ??? */
 
     /* USER */
@@ -458,7 +480,7 @@ class IRC {
     $this->connected=true;
 
     /* Try to identify */
-    if (! $this->userpass !== "") {
+    if ($this->userpass !== "") {
       $this->identify();
     }
 
