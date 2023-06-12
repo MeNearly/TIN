@@ -1,5 +1,9 @@
 <?php
-
+/*******************************************
+**        BOT : Connections handler       **
+** (c) V1.2c 202x ian/KsyNET GPL2         **
+** ian : meNearly@gmail.com               **
+*******************************************/
 namespace bot;
 require 'IRC.php';
 
