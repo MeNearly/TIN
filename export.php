@@ -1,11 +1,11 @@
 <?php
 /***********************************
 **    Exportation des messages    **
-** (c) 2020-2022 Xylian.fr        **
-** ian : MeNearly@gmail.com GPL   **
+** (c) 202x ian/KsyNET .fr        **
+** ian : MeNearly@gmail.com GPL2  **
 ************************************/
 /**********
-** V1.1b **
+** V1.2c **
 ***********/
 namespace bot;
 require_once 'functions.php';

@@ -10,7 +10,7 @@ namespace bot;
 
 const ADMINISTRATOR="monitor"; /* administrator username in .htaccess */
 
-const version_reply="Tin Irc Node v1.2c (c) 2020-202x ksynet.fr";
+const version_reply="Tin Irc Node v1.3 (c) 2020-202x ksynet.fr";
 const quitMsg="Gone with the wind...";
 
 const messagesDir="/home/YOU/monitoring/JSON/";

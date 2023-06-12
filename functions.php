@@ -1,11 +1,11 @@
 <?php
-/************************************
-**       Sauvegarde et rendu       **
-**         des messages IRC        **
-** (c) 2022 MeNearly@gmail.com GPL **
-*************************************/
+/*************************************
+**       Sauvegarde et rendu        **
+**         des messages IRC         **
+** (c) 202x MeNearly@gmail.com GPL2 **
+**************************************/
 /**********
-** V1.1b **
+** V1.2c **
 ***********/
 
 namespace bot;

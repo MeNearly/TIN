@@ -6,7 +6,7 @@
 ** They must explicetly be specified when creating **
 **    the connection to IRC (see class \bot\IRC )  **
 ** (c) 2020-202x meNearly@gmail.com                **
-** All source files are under GPL                  **
+** All source files are under GPL v2               **
 *****************************************************/
 namespace bot\events;
 

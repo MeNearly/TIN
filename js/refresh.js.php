@@ -5,7 +5,7 @@
 ** [except corrected mircToHtml]           **
 *********************************************/
 /**********
-** V1.1b **
+** V1.2c **
 ***********/
 
 header("Content-type: text/javascript");
@@ -249,6 +249,74 @@ function openChannelTab(evt, channel) {
   } else {
     document.getElementById("chansFloater").style.display="none";
   }
+}
+
+function exportSearch() {
+  let reg=document.getElementById("reString").value;
+  let nick=document.getElementById("nick").value;
+  let server_channel=document.getElementById("channel").value;
+  let limit=document.getElementById("limit").value;
+  let caseSensitive=document.getElementById("caseSensitive").checked?1:0;
+  let fromStart=document.getElementById("fromStart").checked?1:0;
+  let asc=document.getElementById("asc");
+  let desc=document.getElementById("desc");
+  let order=asc.checked?"asc":(desc.checked?"desc":"");
+  let stripCodes=document.getElementById("stripCodes").checked?1:0;
+  let re=/(.+)_(#|&)(.+)/;
+  let rerez=re.exec(server_channel);
+  let server=rerez[1];
+  let channel=rerez[3];
+  window.open(encodeURI(`search.php?reg=${reg}&nick=${nick}&server=${server}&chan=${channel}&case=${caseSensitive}&limit=${limit}&strip=${stripCodes}&fromStart=${fromStart}&order=${order}&export=1`),"_searchResult");
+}
+
+function launchSearch() {
+  let reg=document.getElementById("reString").value;
+  let nick=document.getElementById("nick").value;
+  let server_channel=document.getElementById("channel").value;
+  let limit=document.getElementById("limit").value;
+  let caseSensitive=document.getElementById("caseSensitive").checked?1:0;
+  let fromStart=document.getElementById("fromStart").checked?1:0;
+  let asc=document.getElementById("asc");
+  let desc=document.getElementById("desc");
+  let order=asc.checked?"asc":(desc.checked?"desc":"");
+  let stripCodes=document.getElementById("stripCodes").checked?1:0;
+  let re=/(.+)_(#|&)(.+)/;
+  let rerez=re.exec(server_channel);
+  let server=rerez[1];
+  let channel=rerez[3];
+  document.body.style.cursor='wait';
+  let myHeaders = new Headers();
+  myHeaders.append('Content-Type','text/plain; charset=UTF-8');
+  fetch(encodeURI(`search.php?reg=${reg}&nick=${nick}&server=${server}&chan=${channel}&case=${caseSensitive}&limit=${limit}&strip=${stripCodes}&fromStart=${fromStart}&order=${order}`),myHeaders).then(response => {
+    if (response.ok) {
+      return response.text();
+    } else {
+      throw new Error("Erreur réseau...");
+    }
+  }).then(text => {
+    let result=document.getElementById("result");
+    result.style.display="block";
+    let resultTab=document.getElementById("resultTab");
+    let floater=document.getElementById("chansFloater");
+    if (text!="") {
+      floater.style.display="block";
+      resultTab.innerHTML=text;
+      floater.style.display="block";
+      resultTab.ownerDocument.scrollingElement.scrollTop=0;
+      /* reverseVideo ... still complicated ^^ */
+      let lines=document.getElementsByClassName("Xreverse");
+      for (let i=0;i<lines.length;i++) {
+        reverseVideo(lines[i]);
+      }
+    } else {
+      floater.style.display="none";
+      resultTab.innerHTML="<tr><td colspan='3' style='text-align:center;color:darkred'>Aucun message</td></tr>";
+    }
+  }).catch (error => {
+    alert(error.message);
+  }).finally( () => {
+    document.body.style.cursor='default';
+  });
 }
 
 function mircToHtml(text) {

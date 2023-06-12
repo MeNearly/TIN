@@ -1,10 +1,10 @@
 <?php
 /************************************
 ** Récupération des messagest      **
-** (c) 2022 MeNearly@gmail.com GPL **
+** (c) 202x MeNearly@gmail.com GPL **
 *************************************/
 /**********
-** V1.1b **
+** V1.2c **
 ***********/
 namespace bot;
 require_once 'params.php';

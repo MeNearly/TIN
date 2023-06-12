@@ -1,10 +1,10 @@
 <?php
 /*****************************************
-****  Récupération des messages    *******
-** (c) 2020-2022 MeNearly@gmail.com GPL **
+****  Récupération des messages         **
+** (c) 202x MeNearly@gmail.com GPL      **
 ******************************************/
 /**********
-** V1.1b **
+** V1.2c **
 ***********/
 namespace bot;
 require_once 'functions.php';
@@ -32,7 +32,8 @@ header("Content-Type: text/HTML; charset=UTF-8");
 
 $filename=\bot\messages\getFilename($channel."_".$date_ft, true, $isToday); /* $isToday means $nozip==true */
 if (!file_exists($filename)) {
-  echo '      <tr><td><span style="color:darkred">Aucun message pour '.$channel.' au '.$date_dsp.'...</span></td></tr>'.PHP_EOL;
+  echo "";
+//  echo '      <tr><td><span style="color:darkred">Aucun message pour '.$channel.' au '.$date_dsp.'...</span></td></tr>'.PHP_EOL;
 } else {
   $msgs = \bot\messages\loadFile($filename,false);
   $messages = $msgs['messages'];

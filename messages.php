@@ -1,10 +1,10 @@
 <?php
-/***********************************
-** GESTION DES FICHIERS MESSAGES  **
-** (c) 2020 MeNearly@gmail.com GPL     **
-************************************/
+/*****************************************
+** GESTION DES FICHIERS MESSAGES        **
+** (c) 202x MeNearly@gmail.com GPL2     **
+******************************************/
 /**********
-** V1.1b **
+** V1.2c **
 ***********/
 namespace bot\messages;
 

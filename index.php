@@ -1,10 +1,10 @@
 <?php
 /**************************************
 ** Visualisation des chans en direct **
-** (c) 2022 MeNearly@gmail.com GPL   **
+** (c) 202x MeNearly@gmail.com GPL   **
 ***************************************/
 /**********
-** V1.1b **
+** V1.2c **
 ***********/
 require_once 'functions.php';
 ?>
@@ -30,7 +30,11 @@ require_once 'functions.php';
 <?php
     }
 ?>
-        <span style="font-weight:bold;float:right"><a href="view.php">Archives</a></span>
+        <span style="font-weight:bold;float:right">
+          <a href="view.php">Archives</a>&nbsp;&nbsp;
+          <a href="searchPage.php">Recherche</a>&nbsp;&nbsp;
+          <a href="admin.php">Admin...</a>
+        </span>
       </div>
 <?php
     foreach ($channels as $chan) {

@@ -1,11 +1,11 @@
 <?php
 /********************************************
 **    An IRC connecion for Tin Irc Node    **
-** (c) 2020-2022 ian & ksynet.fr           **
+** (c) 202x ian & ksynet.fr                **
 ** MeNearly@gmail.com                      **
 *********************************************/
 /**********
-** V1.1c **
+** V1.2c **
 ***********/
 namespace bot;
 require_once 'Bot.php';
@@ -542,7 +542,7 @@ class IRC {
     return true;
   }
 
-  public function stop($quitMsg) {
+  public function stop($quitMsg=\bot\quitMsg) {
     if ($quitMsg=="") $quitMsg=$this->quitMsg;
     $this->mustStop=true;
     $this->quitMsg=$quitMsg;
@@ -553,7 +553,7 @@ class IRC {
     fclose($this->socket);
   }
 
-  public function exit($quitMsg="") {  /* terminates all connections [/die] */
+  public function exit($quitMsg=\bot\quitMsg) {  /* terminates all connections [/die] */
     if ($this->owner != NULL) {
       foreach ($this->owner->getConnections() as $other) {
         $other->stop($quitMsg);
@@ -709,8 +709,10 @@ class IRC {
       /* SEND ONE TIME ONLY */
       foreach ($this->linkedChannels[$to] as $name => $conn) {
         if ($this->owner && !$this->owner->botSent($name)) {
-          $conn['connection']->sendto($conn['channel'],$message);
-          $this->owner->setBotSent($conn['channel']);
+          if ($conn['connection']->isConnected()) {
+            $conn['connection']->sendto($conn['channel'],$message);
+            $this->owner->setBotSent($conn['channel']);
+          }
         }
       }
     } elseif ($to==$this->nickname) { /* PRIVATE MSG for this connection */

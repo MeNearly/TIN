@@ -1,10 +1,10 @@
 <?php
 /*************************************
 ** Visualisation des logs archivées **
-** (c) 2020 MeNearly@gmail.com GPL       **
+** (c) 202x MeNearly@gmail.com GPL2 **
 **************************************/
 /**********
-** V1.1b **
+** V1.2c **
 ***********/
 require_once 'functions.php';
 $today=new \DateTime();
@@ -46,7 +46,11 @@ $today_ft=$today->format("Y_m_d");
 <?php
     }
 ?>
-        <span style="font-weight:bold;float:right"><a href="index.php">Live</a></span>
+        <span style="font-weight:bold;float:right">
+          <a href="index.php">Live</a>&nbsp;&nbsp;
+          <a href="searchPage.php">Recherche</a>&nbsp;&nbsp;
+          <a href="admin.php">Admin...</a>&nbsp;&nbsp;
+        </span>
       </div>
 <?php
     foreach ($channels as $chan) {
