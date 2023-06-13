@@ -253,6 +253,7 @@ function openChannelTab(evt, channel) {
 
 function exportSearch() {
   let reg=document.getElementById("reString").value;
+  reg=reg.replaceAll(/\+/,"¤¤¤");
   let nick=document.getElementById("nick").value;
   let server_channel=document.getElementById("channel").value;
   let limit=document.getElementById("limit").value;
@@ -271,6 +272,7 @@ function exportSearch() {
 
 function launchSearch() {
   let reg=document.getElementById("reString").value;
+  reg=reg.replaceAll(/\+/,"¤¤¤");
   let nick=document.getElementById("nick").value;
   let server_channel=document.getElementById("channel").value;
   let limit=document.getElementById("limit").value;

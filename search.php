@@ -58,6 +58,7 @@ function search(string $server, string $channel, string $reg, string $nick_reg="
 }
 
 function createRE(string &$reg, bool $ci) {
+  $reg=preg_replace("/¤¤¤/","+",$reg);
   $a=ord($reg[0]);
   if ($reg[0]!==$reg[-1] || ($a>47 && $a<58) || ($a>64 && $a<91) || ($a>96 && $a<123)) {
     // try delimiters...
