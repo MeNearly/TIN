@@ -150,7 +150,11 @@ function refresh(channel,scroll=false) {
     }).then(json => {
       refreshCallback(json,channel,scroll);
     }).catch(error => {
-      alert(error.message);
+      let msg=error.message;
+      if (msg.toLowerCase().indexOf("networkerror")>-1) {
+        msg="Erreur réseau..";
+      }
+      alert(msg);
     }).finally( () => {
       running--;
       if (running==0)
@@ -189,7 +193,11 @@ function refreshView(channel, dateParam='', isToday=false) {
       channelTab.innerHTML="<tr><td colspan='3' style='text-align:center;color:darkred'>Aucun message</td></tr>";
     }
   }).catch (error => {
-    alert(error.message);
+    let msg=error.message;
+    if (msg.toLowerCase().indexOf("networkerror")>-1) {
+      msg="Erreur réseau..";
+    }
+    alert(msg);
   }).finally( () => {
     document.body.style.cursor='default';
   });
@@ -315,7 +323,11 @@ function launchSearch() {
       resultTab.innerHTML="<tr><td colspan='3' style='text-align:center;color:darkred'>Aucun message</td></tr>";
     }
   }).catch (error => {
-    alert(error.message);
+    let msg=error.message;
+    if (msg.toLowerCase().indexOf("networkerror")>-1) {
+      msg="Erreur réseau..";
+    }
+    alert(msg);
   }).finally( () => {
     document.body.style.cursor='default';
   });

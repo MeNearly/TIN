@@ -143,14 +143,16 @@ try {
   }
 }
 
+$messages=search($server, $channel, $reg, $nick, $limit, $stripcodes, $fromStart, $order);
+restore_error_handler();
+
 $search=($reg!=""?"'$reg'":"").($nick!=""?" par '$nick'":"");
 if ($export) {
   echo "Recherche de messages $search, depuis l".($fromStart?"e début":"a fin").", par date ".($order==2?"dé":"")."croissante, $limit résultats maximum.".PHP_EOL;
+  echo count($messages)." résultats.".PHP_EOL;
 } else {
-  echo "<tr><td align='center' colspan=3>Recherche de messages $search, depuis l".($fromStart?"e début":"a fin").", par date ".($order==2?"dé":"")."croissante, $limit résultats maximum.<br/>";
+  echo "<tr><td align='center' colspan=3>Recherche de messages $search, depuis l".($fromStart?"e début":"a fin").", par date ".($order==2?"dé":"")."croissante, $limit résultats maximum. ".count($messages)." lignes.<br/>";
 }
-$messages=search($server, $channel, $reg, $nick, $limit, $stripcodes, $fromStart, $order);
-restore_error_handler();
 
 if (count($messages)==0) {
   echo "<tr><td colspan='3' style='text-align:center;color:darkred'>Aucun message</td></tr>";

@@ -65,6 +65,7 @@ class IRC {
   private int $MAX_RECONNECT = 5;
   private int $reconnections = 0;
 
+  private array $performs = array();
   /* Linked Chans */
   public array $linkedChannels;
 
@@ -201,10 +202,14 @@ class IRC {
     return $this->defaultChan;
   }
 
-  public function addCapability(string $cap) {
+  public function addCapability(string $cap):void {
     $cap=trim($cap);
     if ($cap!="")
       $this->caps[]=$cap;
+  }
+
+  public function addPerforms(...$performs):void {
+    $this->performs=array_merge($this-performs,$performs);
   }
 
   private function initEventsPatterns() {
@@ -487,6 +492,11 @@ class IRC {
     /* MODES */
     $this->send('MODE '.$this->nickname.' '.$this->userMode);
 
+    /* PERFORMS */
+    foreach ($this->performs as $p_line) {
+      $this->send($p_line);
+    }
+
     return true;
   }
 
@@ -602,7 +612,7 @@ class IRC {
       }
       $this->debug($c);
 
-      /* Connection closed */
+      /* Connection closed */ /* DEBUGTHIS ! */
       if (preg_match('/^ERROR :Closing Link: ([^\ ]+) (.*)$/', $c, $matches)) {
         echo "*** /!\\ ***".$this->getShortname()." Connexion closed, reason : ".$matches[2].PHP_EOL;
         fclose($this->socket);
