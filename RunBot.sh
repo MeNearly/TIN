@@ -17,7 +17,7 @@ $Bot=new \bot\Bot(version: "TIN is neat !", pidFile: "./pid.myBotname");
 $conn1 = new \bot\IRC("irc.first.server", 6697, true, "server_one", 1807);
 $conn1->setDebug(true);
 $conn1->setDefaultChan("#myChannel");
-$conn1->setIdentity("Nick","Handler","Realnam","MyPassword");
+$conn1->setIdentity("Nick","Handler","Realname","MyPassword");
 $conn1->addEventHandler('userslist');
 $conn1->addEventHandler('privmsg');
 $conn1->addEventHandler('privmsg','\bot\events\link'); /* to allow links */
@@ -38,13 +38,16 @@ $conn1->addEventHandler('devoice');
 $conn1->addEventHandler('servmsg');
 $conn1->addEventHandler('other_servmsg');
 
+$conn1->addPerforms("NICK Suffix"); /* example for the nicksuffix module w/ unreal */
+//$conn1->addPerforms("NICK myNewNick|afk");
+
 // On ajoute server_one
 $Bot->addConnection($conn1);
 $Bot->addChannels("server_one",array("#myChannel"));
 
 // On crée la connexion à Server Two
 
-$conn2 = new \bot\IRC("irc.second.server", 6697, true, "server_two", 1807, "server_pass", "server_two user reflected to other connection");
+$conn2 = new \bot\IRC("irc.second.server", 6697, true, "server_two", 1807, "server_pass", array("botAdmin1","botAdmin2"));
 $conn2->setDebug(true);
 $conn2->setDefaultChan("#myChannel-mirror");
 $conn2->setIdentity("Nick","Handler","Real Name","myPassword","NickServ_Nickname");
@@ -62,6 +65,8 @@ $conn2->addEventHandler('unban');
 $conn2->addEventHandler('voice');
 $conn2->addEventHandler('devoice');
 $conn2->addEventHandler('servmsg');
+
+$conn2->addPerforms("privmsg botAdmin1 :I'm alive !");
 
 
 // On ajoute server_2
