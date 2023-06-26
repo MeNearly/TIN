@@ -125,7 +125,7 @@ if ($server=="" || $channel=="" || ($reg=="" && $nick=="") ||$order==0) {
     die(1);
   } else {
     echo "<tr><td colspan=3><span style='color:red'>ERREUR !<br/>".PHP_EOL;
-    echo "reg=$reg&nbsp;nick=$nick</span>".PHP_EOL;
+    echo "<i>Paramètres de la recherche invalides</i></span>".PHP_EOL;
     echo "</td><tr>".PHP_EOL;
     die(1);
   }
