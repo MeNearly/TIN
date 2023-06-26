@@ -10,8 +10,8 @@
 namespace bot\search;
 require_once 'functions.php';
 
-set_error_handler(function ($err_msg) {
-  throw new \Exception( $err_msg);
+set_error_handler(function (int $err_no, string $errstr="", string $errfile = null, int $errline = 0, array $errcontext = array()) {
+  throw new \Exception( $errstr);
 }, E_WARNING);
 
 function search(string $server, string $channel, string $reg, string $nick_reg="", int $limit=0, bool $stripcodes=true, bool $fromStart=false, int $order=2): array {
@@ -22,8 +22,8 @@ function search(string $server, string $channel, string $reg, string $nick_reg="
   }
   $result=array();
   $i=0;
-  $testNick=($nick_reg!="");
   $testMsg=($reg!="");
+  $testNick=($nick_reg!="");
   foreach ($files as $fname) {
     if (!file_exists($fname)) {
       echo 'Fichier introuvable : '.$fname.PHP_EOL;
@@ -41,7 +41,7 @@ function search(string $server, string $channel, string $reg, string $nick_reg="
           $msg=\bot\stripControlCodes($m['message']);
         }
         $nick=$m['nick'];
-        $tm=(($testMsg && preg_match($reg,$msg,$matches)) || !$testMsg);
+        $tm=(($testMsg && preg_match($reg,$msg,$matches)) || (!$testNick && preg_match($reg,$nick,$matches)) || !$testMsg);
         $tn=(($testNick && preg_match($nick_reg,$nick,$matches)) || ($testMsg && preg_match($reg,$nick,$matches)) || !$testNick);
         if ($tm && $tn) {
           $result[]=$m;
@@ -98,8 +98,16 @@ if (php_sapi_name()=="cli") {
   $orderName=$_REQUEST['order']??"desc";
   $stripcodes=boolval($_REQUEST['strip']??1);
 }
-$order=($orderName=="asc"?1:($orderName=="desc"?2:0));
 $export=boolval($_REQUEST['export']??false);
+if ($limit<=0) {
+  if ($export) {
+    echo "<html><header><script type='text/javascript'>alert('Vous ne demandez aucun résultat...');window.close();</script></header></html>";
+  } else {
+    echo "<tr><td colspan=3><span style='color:red'>Vous ne demandez aucun résultat !<br/>".PHP_EOL;
+  }
+  die();
+}
+$order=($orderName=="asc"?1:($orderName=="desc"?2:0));
 file_put_contents("reg.txt",$reg);
 if ($export) {
   header("Content-Type: text/csv; charset=UTF-8");
