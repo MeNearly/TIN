@@ -26,6 +26,8 @@ var running=0;
 
 const zeroPad = (num, places) => String(num).padStart(places, '0');
 
+var controller = new AbortController();
+
 //Remplacer tous les 'search' par 'replacement' dans une chaîne
 String.prototype.replaceAll = function(search, replacement) {
     let target = this;
@@ -294,10 +296,14 @@ function launchSearch() {
   let rerez=re.exec(server_channel);
   let server=rerez[1];
   let channel=rerez[3];
+  let abortBtn=document.getElementById("abort_btn");
   document.body.style.cursor='wait';
-  let myHeaders = new Headers();
-  myHeaders.append('Content-Type','text/plain; charset=UTF-8');
-  fetch(encodeURI(`search.php?reg=${reg}&nick=${nick}&server=${server}&chan=${channel}&case=${caseSensitive}&limit=${limit}&strip=${stripCodes}&fromStart=${fromStart}&order=${order}`),myHeaders).then(response => {
+  abortBtn.style.display="";
+
+  fetch(encodeURI(`search.php?reg=${reg}&nick=${nick}&server=${server}&chan=${channel}&case=${caseSensitive}&limit=${limit}&strip=${stripCodes}&fromStart=${fromStart}&order=${order}`),{
+    headers:{'Content-Type':'text/plain; charset=UTF-8'},
+    signal:controller.signal
+  }).then(response => {
     if (response.ok) {
       return response.text();
     } else {
@@ -323,6 +329,11 @@ function launchSearch() {
       resultTab.innerHTML="<tr><td colspan='3' style='text-align:center;color:darkred'>Aucun message</td></tr>";
     }
   }).catch (error => {
+    if (error.name == 'AbortError') { // gère abort()
+      alert("Annulé ");
+      controller = new AbortController();
+      return true;
+    }
     let msg=error.message;
     if (msg.toLowerCase().indexOf("networkerror")>-1) {
       msg="Erreur réseau..";
@@ -330,9 +341,12 @@ function launchSearch() {
     alert(msg);
   }).finally( () => {
     document.body.style.cursor='default';
+    abortBtn.style.display="none";
   });
 }
-
+function abortSearch() {
+  controller.abort();
+}
 function mircToHtml(text) {
   /* control codes */
   /* Corrections/améliorations by MeNearly@gmail.com */

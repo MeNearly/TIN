@@ -39,6 +39,14 @@ header("Content-type: text/css");
     }
 }
 
+.button2[disabled]{
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  color: #666666;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 .button2:active {
   background-color: #ea9c22;
   box-shadow: 0 2px #666;

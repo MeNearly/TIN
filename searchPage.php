@@ -23,10 +23,9 @@ require_once 'functions.php';
         <span style="font-weight:bold;float:right">
           <a href="index.php">Live</a>&nbsp;&nbsp;
           <a href="view.php">Archives</a>&nbsp;&nbsp;
-          <a href="admin.php">Admin...</a>
         </span>
 
-        <b>Recherche :</b>&nbsp;<input id="reString" type="text" value="" size=80 required /><br/>
+        <b>Recherche :</b>&nbsp;<input id="reString" type="text" value="" size=80 required onkeypress="let btn1=document.getElementById('search_btn');let btn2=document.getElementById('save_btn');if (this.value!='') {btn1.disabled=false;btn2.disabled=false;} else {btn1.disabled=true;btn2.disabled=true;}"/><br/>
         <small><i>pseudo ?</i>&nbsp;<input style="font:0.7em;font-family:courrier new" id="nick" type="text" value="" size=30 /></small><br/>
         <b>Salon :</b> <select id="channel" required>
 <?php
@@ -41,11 +40,12 @@ require_once 'functions.php';
         </select><br/>
         <input type="checkbox" id="caseSensitive" value=1>&nbsp;Sensible à la casse<br/>
         <small>⚠ Il s'agit d'une expression régulière, et même si vous ne savez pas bien l'utiliser, pour une recherche simple pensez à ajouter <b>\</b> devant au moins ces caractères spéciaux <b>" ' ( ) [ ] { } </b><i>et surtout (!)</i><b> |</b>. </small><br/>
-        <input type="checkbox" id="fromStart" value=1>&nbsp;Depuis le début,&nbsp;&nbsp;<b>Horodatage</b>&nbsp;<input type="radio" name="order" id="asc" value="asc"> croissant&nbsp;&nbsp;<input type="radio" name="order" id="desc" value="desc" checked> décroissant<br/>
+        <input type="checkbox" id="fromStart" value=1 onchange="if (this.checked) {document.getElementById('asc').checked=true;} else {document.getElementById('desc').checked=true;}">&nbsp;Depuis le début,&nbsp;&nbsp;<b>Horodatage</b>&nbsp;<input type="radio" name="order" id="asc" value="asc"> croissant&nbsp;&nbsp;<input type="radio" name="order" id="desc" value="desc" checked> décroissant<br/>
         <input type="number" id="limit" value=50 min=10 max=2000 size=5>&nbsp;résultats maximum&nbsp;&nbsp;
         <input type="checkbox" id="stripCodes" value=1>&nbsp;Ignorer le formatage
         <br/>
-        <button class="button2" onclick="launchSearch()">Search !</button>&nbsp;&nbsp;<button class="button2" onclick="exportSearch()">💾</button>
+        <button class="button2" id="search_btn" onclick="launchSearch()" disabled>Search !</button>&nbsp;&nbsp;<button class="button2" id="save_btn" onclick="exportSearch()" disabled>💾</button>
+        <button class="button2" id="abort_btn" style="display:none;font-size:0.8em;color:#f91660;background-color:#ffdaaa;" onclick="abortSearch()">Abort...</button>
       </div>
       <div id="result" class="tabcontent">
         <table style="border:1px solid;border-color:darkslateblue" width="100%">
