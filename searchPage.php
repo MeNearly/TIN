@@ -25,8 +25,8 @@ require_once 'functions.php';
           <a href="view.php">Archives</a>&nbsp;&nbsp;
         </span>
 
-        <b>Recherche :</b>&nbsp;<input id="reString" type="text" value="" size=80 required onkeypress="let btn1=document.getElementById('search_btn');let btn2=document.getElementById('save_btn');if (this.value!='') {btn1.disabled=false;btn2.disabled=false;} else {btn1.disabled=true;btn2.disabled=true;}"/><br/>
-        <small><i>pseudo ?</i>&nbsp;<input style="font:0.7em;font-family:courrier new" id="nick" type="text" value="" size=30 /></small><br/>
+        <b>Recherche :</b>&nbsp;<input id="reString" type="text" value="" size=80 onkeypress="let nick=document.getElementById('nick');let btn1=document.getElementById('search_btn');let btn2=document.getElementById('save_btn');if (this.value!='' || nick.value!='') {btn1.disabled=false;btn2.disabled=false;} else {btn1.disabled=true;btn2.disabled=true;}"/><br/>
+        <small><i>pseudo ?</i>&nbsp;<input style="font:0.7em;font-family:courrier new" id="nick" type="text" value=""  onkeypress="let re=document.getElementById('reString');let btn1=document.getElementById('search_btn');let btn2=document.getElementById('save_btn');if (this.value!='' || re.value!='') {btn1.disabled=false;btn2.disabled=false;} else {btn1.disabled=true;btn2.disabled=true;}" size=30 /></small><br/>
         <b>Salon :</b> <select id="channel" required>
 <?php
     $channels=\bot\getAllowedChannels();
