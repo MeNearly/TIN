@@ -1,7 +1,7 @@
 <?php
 /**************************************
 ** Recherche dans les archives       **
-** (c) 2023 MeNearly@gmail.com GPL2  **
+** (c) 202x MeNearly@gmail.com GPL2  **
 ***************************************/
 /**********
 ** V1.2c **
@@ -69,6 +69,16 @@ require_once 'functions.php';
           var top = winScrollTop + Math.floor((winHeight - floaterHeight)/2);
           f.style.top=top + 'px';
         };
+        document.addEventListener("copy",(event) => {
+          let sel=document.getSelection();
+          let node=sel.anchorNode.parentElement;
+          while (!!node && !node.classList.contains("tabline_msg"))
+            node=node.parentElement;
+          if (!!node && node.classList.contains("tabline_msg")) {
+            alert("Formatage IRC de la ligne :\n"+node.dataset["mirc"]);
+          }
+          event.clipboardData.setData("text/plain",sel.toString());
+        });
       </script>
     </center>
   </body>

@@ -33,7 +33,7 @@ function saveMessage(array $data, \bot\IRC $conn) {
   $msgs=\bot\messages\loadMessages($who);
 
   /* Verify char encoding */
-   if (mb_detect_encoding($data['msg'], 'UTF-8', true) != 'UTF-8')
+   if (\mb_detect_encoding($data['msg'], 'UTF-8', true) != 'UTF-8')
      $data['msg'] = iconv("ISO-8859-1", "UTF-8", $data['msg']);
 
   /* ACTION */
@@ -90,9 +90,6 @@ function irc2html(string $text):string {
   foreach ($lines as $line) {
 
     $line = nl2br(htmlentities($line, ENT_COMPAT));
-    $line = preg_replace_callback('@(https?://([-\w\.]+)+(:\d+)?(/([\S+]*(\?\S+)?)?)?)@', function($matches) {
-      return "<a href='".$matches[1]."' class='topic' target='".url2simpleName($matches[1])."'>".$matches[1]."</a>";
-    }, $line);
     $line = preg_replace_callback('/[\003](\d{0,2})(,\d{1,2})?([^\003\x0F]*)(?:[\003](?!\d))?/', function($matches) {
       $colors = \bot\colors\getColorsArray();
       $options = '';
@@ -107,21 +104,23 @@ function irc2html(string $text):string {
         $options .= 'color: ' . $colors[(int) $forecolor] . ';';
       }
       if ($options != '') {
-        return '<span style="' . $options . '">' . $matches[3] . '</span>';
+        return '<span style="' . $options . '" data-mirc="'.addslashes($matches[0]).'">' . $matches[3] . '</span>';
       } else {
         return $matches[3];
       }
     }, $line);
-    $line = preg_replace('/[\002]([^\002\x0F]*)(?:[\002])?/', '<strong>$1</strong>', $line);
-    $line = preg_replace('/[\x1F]([^\x1F\x0F]*)(?:[\x1F])?/', '<span style="text-decoration:underline">$1</span>', $line);
-    $line = preg_replace('/[\x12]([^\x12\x0F]*)(?:[\x12])?/', '<span style="text-decoration:line-through">$1</span>', $line);
-    $line = preg_replace('/[\x1D]([^\x1D\x0F]*)(?:[\x1D])?/', '<span style="font-style:italic">$1</span>', $line);
+    $line = preg_replace('/[\002]([^\002\x0F]*)(?:[\002])?/', '<strong data-mirc="$0">$1</strong>', $line);
+    $line = preg_replace('/[\x1F]([^\x1F\x0F]*)(?:[\x1F])?/', '<span style="text-decoration:underline" data-mirc="$0">$1</span>', $line);
+    $line = preg_replace('/[\x12]([^\x12\x0F]*)(?:[\x12])?/', '<span style="text-decoration:line-through" data-mirc="$0">$1</span>', $line);
+    $line = preg_replace('/[\x1D]([^\x1D\x0F]*)(?:[\x1D])?/', '<span style="font-style:italic" data-mirc="$0">$1</span>', $line);
 
 /* gestion naïve de la vidéo inversée */
-    $line = preg_replace('/[\x16]([^\x16\x0F]*)(?:[\x16])?/', '<span class="Xreverse">$1</span>', $line);
+    $line = preg_replace('/[\x16]([^\x16\x0F]*)(?:[\x16])?/', '<span class="Xreverse" data-mirc="$0">$1</span>', $line);
 
     $line = preg_replace('/\x0F/','',$line);
-
+    $line = preg_replace_callback('@(https?://([-\w\.]+)+(:\d+)?(/([\S+]*(\?\S+)?)?)?)@', function($matches) {
+      return "<a href='".$matches[1]."' class='topic' target='".url2simpleName($matches[1])."'>".$matches[1]."</a>";
+    }, $line);
     /* ajout de la ligne à la variable de retour */
     if ($line != '') {
       $out .= $line;
