@@ -174,7 +174,7 @@ if (count($messages)==0) {
       echo "<tr>".PHP_EOL;
       echo "<td class='tabline_date'>".date('d/m/Y H:i:s', $m['timestamp'])."</td>".PHP_EOL;
       echo "<td class='tabline_nick'>".\bot\irc2html($m['nick'])."</td>".PHP_EOL;
-      echo "<td class='tabline_msg'>".\bot\irc2html($m['message'])."</td>".PHP_EOL;
+      echo "<td class='tabline_msg' data-mirc='".addslashes($m['message'])."'>".\bot\irc2html($m['message'])."</td>".PHP_EOL;
       echo "</tr>".PHP_EOL;
     }
   }
