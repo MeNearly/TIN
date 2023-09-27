@@ -77,6 +77,12 @@ function createRE(string &$reg, bool $ci) {
   }
 }
 
+function escape(string $msg) {
+//  $tmp=preg_replace("/'/","\\'",$msg);
+  $tmp=preg_replace("/\"/","\\\"",$msg);
+  return $tmp;
+}
+
 if (php_sapi_name()=="cli") {
   $cmd=array_shift($argv);
   $server=$argv[0]??"";
@@ -174,7 +180,7 @@ if (count($messages)==0) {
       echo "<tr>".PHP_EOL;
       echo "<td class='tabline_date'>".date('d/m/Y H:i:s', $m['timestamp'])."</td>".PHP_EOL;
       echo "<td class='tabline_nick'>".\bot\irc2html($m['nick'])."</td>".PHP_EOL;
-      echo "<td class='tabline_msg' data-mirc='".addslashes($m['message'])."'>".\bot\irc2html($m['message'])."</td>".PHP_EOL;
+      echo '<td class="tabline_msg" data-mirc="'.escape($m['message']).'">'.\bot\irc2html($m['message'])."</td>".PHP_EOL;
       echo "</tr>".PHP_EOL;
     }
   }

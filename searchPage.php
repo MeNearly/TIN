@@ -75,9 +75,12 @@ require_once 'functions.php';
           while (!!node && !node.classList.contains("tabline_msg"))
           node=node.parentElement;
           if (!!node && node.classList.contains("tabline_msg")) {
-            alert("Formatage IRC de la ligne :\n"+node.dataset["mirc"]);
-          }
-          event.clipboardData.setData("text/plain",sel.toString());
+            console.log(node.dataset["mirc"]);
+            alert("Formatage IRC de la ligne (à copier):\n"+node.dataset["mirc"]);
+            event.clipboardData.setData("web image/gif",node.dataset["mirc"]);
+            return;
+          } else
+            event.clipboardData.setData("text/plain",sel.toString());
         });
       </script>
     </center>
